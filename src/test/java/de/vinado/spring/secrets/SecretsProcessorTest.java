@@ -13,7 +13,6 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -95,10 +94,6 @@ class SecretsProcessorTest {
 
         private Optional<Object> resolve(String location) {
             return Optional.ofNullable(getFileContent(Paths.get(location)));
-        }
-
-        private static Consumer<Object> add(String systemProperty, Map<String, Object> source) {
-            return secretValue -> source.put(systemProperty, secretValue);
         }
     }
 }

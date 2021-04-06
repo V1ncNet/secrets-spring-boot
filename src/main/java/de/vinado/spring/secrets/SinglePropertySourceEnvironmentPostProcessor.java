@@ -8,6 +8,7 @@ import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertySource;
 import org.springframework.core.env.StandardEnvironment;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -36,4 +37,8 @@ public abstract class SinglePropertySourceEnvironmentPostProcessor implements En
     }
 
     protected abstract MapPropertySource getPropertySource(ConfigurableEnvironment environment, SpringApplication application);
+
+    protected Consumer<Object> add(String systemProperty, Map<String, Object> source) {
+        return secretValue -> source.put(systemProperty, secretValue);
+    }
 }

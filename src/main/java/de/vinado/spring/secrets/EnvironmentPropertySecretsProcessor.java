@@ -17,7 +17,6 @@ import java.nio.charset.Charset;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static de.vinado.spring.secrets.Functions.doAndLog;
@@ -99,9 +98,5 @@ public abstract class EnvironmentPropertySecretsProcessor extends SingleProperty
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private Consumer<String> add(String systemProperty, Map<String, Object> source) {
-        return secretValue -> source.put(systemProperty, secretValue);
     }
 }
