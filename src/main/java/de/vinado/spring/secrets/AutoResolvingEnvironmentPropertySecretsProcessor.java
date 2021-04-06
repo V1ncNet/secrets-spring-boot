@@ -26,17 +26,8 @@ public class AutoResolvingEnvironmentPropertySecretsProcessor extends Environmen
     public static final String PROPERTY_SOURCE_NAME = "autoResolvingEnvironmentPropertySecrets";
 
     public AutoResolvingEnvironmentPropertySecretsProcessor(DeferredLogFactory logFactory) {
-        super(logFactory, AutoResolvingEnvironmentPropertySecretsProcessor.class);
-    }
-
-    @Override
-    protected String getRelativePropertySourceName() {
-        return FilenameSecretsProcessor.PROPERTY_SOURCE_NAME;
-    }
-
-    @Override
-    protected String getPropertySourceName() {
-        return PROPERTY_SOURCE_NAME;
+        super(logFactory.getLog(AutoResolvingEnvironmentPropertySecretsProcessor.class), PROPERTY_SOURCE_NAME,
+            FilenameSecretsProcessor.PROPERTY_SOURCE_NAME);
     }
 
     @Override

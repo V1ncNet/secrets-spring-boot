@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.ApplicationContextFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
+import org.springframework.boot.logging.DeferredLogFactory;
 import org.springframework.core.env.ConfigurableEnvironment;
 
 import java.util.Collections;
@@ -36,7 +37,7 @@ class EnvironmentPropertySecretsProcessorTest {
     @BeforeEach
     void setUp() {
         environment = spy(contextFactory.create(WebApplicationType.NONE).getEnvironment());
-        processor = new DockerSecretProcessor();
+        processor = new DockerSecretProcessor(Supplier::get);
     }
 
     @Test
@@ -71,18 +72,13 @@ class EnvironmentPropertySecretsProcessorTest {
             properties.put("spring.datasource.password", "DATABASE_PASSWORD");
         }
 
-        public DockerSecretProcessor() {
-            super(Supplier::get, DockerSecretProcessor.class);
+        public DockerSecretProcessor(DeferredLogFactory logFactory) {
+            super(logFactory.getLog(DockerSecretProcessor.class), "dockerSecrets");
         }
 
         @Override
         protected Map<String, String> getSystemProperties(ConfigurableEnvironment environment) {
             return properties;
-        }
-
-        @Override
-        protected String getPropertySourceName() {
-            return "dockerSecrets";
         }
     }
 }

@@ -2,8 +2,6 @@ package de.vinado.spring.secrets;
 
 import org.apache.commons.logging.Log;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.env.EnvironmentPostProcessor;
-import org.springframework.boot.logging.DeferredLogFactory;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.StandardEnvironment;
@@ -22,33 +20,35 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static de.vinado.spring.secrets.Functions.doAndLog;
+
 /**
  * A processor that resolves environment variables and loads the file content from its value.
  *
  * @author Vincent Nadoll
  */
-public abstract class EnvironmentPropertySecretsProcessor implements EnvironmentPostProcessor {
+public abstract class EnvironmentPropertySecretsProcessor extends SinglePropertySourceEnvironmentPostProcessor {
 
     private final Log log;
+    private final String propertySourceName;
 
-    public EnvironmentPropertySecretsProcessor(DeferredLogFactory logFactory,
-                                               Class<? extends EnvironmentPropertySecretsProcessor> clazz) {
-        this.log = logFactory.getLog(clazz);
+    public EnvironmentPropertySecretsProcessor(Log log, String propertySourceName) {
+        this(log, propertySourceName, StandardEnvironment.SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME);
+    }
+
+    public EnvironmentPropertySecretsProcessor(Log log, String propertySourceName, String relativePropertySourceName) {
+        super(relativePropertySourceName);
+        this.log = log;
+        this.propertySourceName = propertySourceName;
     }
 
     @Override
-    public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
-        log.trace("Examine for secret related environment variables");
-
+    protected MapPropertySource getPropertySource(ConfigurableEnvironment environment, SpringApplication application) {
         ResourceLoader resourceLoader = getResourceLoader(application);
-        Map<String, Object> resolved = resolveSecretResources(environment, resourceLoader);
-
-        environment.getPropertySources()
-            .addAfter(getRelativePropertySourceName(),
-                new MapPropertySource(getPropertySourceName(), resolved));
+        return new MapPropertySource(propertySourceName, resolveSecretResources(environment, resourceLoader));
     }
 
-    private ResourceLoader getResourceLoader(SpringApplication application) {
+    protected ResourceLoader getResourceLoader(SpringApplication application) {
         return null == application.getResourceLoader()
             ? new DefaultResourceLoader()
             : application.getResourceLoader();
@@ -61,7 +61,7 @@ public abstract class EnvironmentPropertySecretsProcessor implements Environment
             String systemProperty = entry.getKey();
             String environmentVariable = entry.getValue();
             resolve(environmentVariable, environment, resourceLoader)
-                .ifPresent(add(systemProperty, source));
+                .ifPresent(doAndLog(add(systemProperty, source), log::info, "Use %s's value to set %s", environmentVariable, systemProperty));
         }
 
         return source;
@@ -84,7 +84,7 @@ public abstract class EnvironmentPropertySecretsProcessor implements Environment
     }
 
     protected Optional<String> loadResource(String location, ResourceLoader resourceLoader) {
-        log.trace(String.format("Reading secret from %s", location));
+        log.trace(String.format("Reading from secret %s", location));
         return Optional.of(location)
             .filter(StringUtils::hasText)
             .map(resourceLoader::getResource)
@@ -104,10 +104,4 @@ public abstract class EnvironmentPropertySecretsProcessor implements Environment
     private Consumer<String> add(String systemProperty, Map<String, Object> source) {
         return secretValue -> source.put(systemProperty, secretValue);
     }
-
-    protected String getRelativePropertySourceName() {
-        return StandardEnvironment.SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME;
-    }
-
-    protected abstract String getPropertySourceName();
 }
