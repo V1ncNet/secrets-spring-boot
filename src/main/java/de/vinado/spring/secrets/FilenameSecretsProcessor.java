@@ -20,6 +20,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static de.vinado.spring.secrets.Functions.log;
+
 /**
  * A processor that resolves all secrets from a configurable directory. The property name is based on the secret's
  * filename. It's value will replace an existing property value with the same name.
@@ -48,6 +50,7 @@ public class FilenameSecretsProcessor extends SinglePropertySourceEnvironmentPos
         String baseDir = environment.getProperty(BASE_DIR_PROPERTY, "/run/secrets");
         Map<String, Object> source = resolveAll(baseDir).entrySet().stream()
             .filter(this::hasNonEmptyValue)
+            .peek(log(log::info, entry -> String.format("Use secret's value to set %s", entry.getKey())))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         return new MapPropertySource(PROPERTY_SOURCE_NAME, source);
     }
@@ -77,6 +80,7 @@ public class FilenameSecretsProcessor extends SinglePropertySourceEnvironmentPos
     }
 
     private Object getFileContent(Path path) {
+        log.trace(String.format("Reading from secret %s", path));
         try (Stream<String> lines = Files.lines(path, Charset.defaultCharset())) {
             StringBuilder builder = new StringBuilder();
             lines.forEach(builder::append);
