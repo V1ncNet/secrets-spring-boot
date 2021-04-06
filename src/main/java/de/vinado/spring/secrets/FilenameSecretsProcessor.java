@@ -70,7 +70,7 @@ public class FilenameSecretsProcessor implements EnvironmentPostProcessor, Order
 
     private Stream<Path> listFiles(Path path) {
         try {
-            return Files.list(path);
+            return Files.list(path).filter(Files::isRegularFile);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
