@@ -8,11 +8,9 @@ import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertySource;
 import org.springframework.core.env.StandardEnvironment;
 
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
-
-import static de.vinado.spring.secrets.Functions.peek;
+import java.util.function.UnaryOperator;
 
 public abstract class SinglePropertySourceEnvironmentPostProcessor implements EnvironmentPostProcessor {
 
@@ -32,13 +30,16 @@ public abstract class SinglePropertySourceEnvironmentPostProcessor implements En
             .map(peek(adder(relativePropertySourceName, getPropertySource(environment, application))));
     }
 
+    private static UnaryOperator<MutablePropertySources> peek(Consumer<MutablePropertySources> action) {
+        return t -> {
+            action.accept(t);
+            return t;
+        };
+    }
+
     protected Consumer<MutablePropertySources> adder(String relativePropertySourceName, PropertySource<?> propertySource) {
         return sources -> sources.addAfter(relativePropertySourceName, propertySource);
     }
 
     protected abstract MapPropertySource getPropertySource(ConfigurableEnvironment environment, SpringApplication application);
-
-    protected Consumer<Object> add(String systemProperty, Map<String, Object> source) {
-        return secretValue -> source.put(systemProperty, secretValue);
-    }
 }

@@ -17,9 +17,8 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
-
-import static de.vinado.spring.secrets.Functions.doAndLog;
 
 /**
  * A processor that resolves secret files. It's value will replace an existing property value with the same name.
@@ -93,5 +92,13 @@ public abstract class SecretsProcessor extends SinglePropertySourceEnvironmentPo
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static Consumer<Object> doAndLog(Consumer<Object> consumer, Consumer<Object> level, String format, Object... arguments) {
+        return consumer.andThen(p -> level.accept(String.format(format, arguments)));
+    }
+
+    private Consumer<Object> add(String systemProperty, Map<String, Object> source) {
+        return secretValue -> source.put(systemProperty, secretValue);
     }
 }
