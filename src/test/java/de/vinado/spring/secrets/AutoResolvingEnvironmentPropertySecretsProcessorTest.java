@@ -40,8 +40,6 @@ class AutoResolvingEnvironmentPropertySecretsProcessorTest {
     @BeforeEach
     void setUp() {
         environment = spy(contextFactory.create(WebApplicationType.NONE).getEnvironment());
-        environment.getPropertySources()
-            .addLast(new MapPropertySource(FilenameSecretsProcessor.PROPERTY_SOURCE_NAME, new HashMap<>()));
         processor = new AutoResolvingEnvironmentPropertySecretsProcessor(Supplier::get);
     }
 
