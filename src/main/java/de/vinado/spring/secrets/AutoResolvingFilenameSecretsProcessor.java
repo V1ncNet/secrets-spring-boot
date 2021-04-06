@@ -4,10 +4,12 @@ import org.springframework.boot.logging.DeferredLogFactory;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,14 +38,14 @@ public class AutoResolvingFilenameSecretsProcessor extends SecretsProcessor impl
     }
 
     @Override
-    protected Map<String, Object> resolveAll(ConfigurableEnvironment environment) {
+    protected Map<String, String> getSystemProperties(ConfigurableEnvironment environment) {
         String baseDir = environment.getProperty(BASE_DIR_PROPERTY, DEFAULT_BASE_DIR_PROPERTY);
         return Optional.of(baseDir)
             .map(Paths::get)
             .filter(Files::isDirectory)
             .map(this::listFiles)
             .orElse(Stream.empty())
-            .collect(Collectors.toMap(this::convertToPropertyName, this::getFileContent));
+            .collect(Collectors.toMap(this::convertToPropertyName, this::toUri));
     }
 
     private Stream<Path> listFiles(Path path) {
@@ -52,6 +54,17 @@ public class AutoResolvingFilenameSecretsProcessor extends SecretsProcessor impl
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    protected String convertToPropertyName(Path filename) {
+        File file = filename.toFile();
+        String name = file.getName();
+        String property = name.replace("_", ".");
+        return property.toLowerCase(Locale.US);
+    }
+
+    private String toUri(Path path) {
+        return path.toUri().toString();
     }
 
     @Override

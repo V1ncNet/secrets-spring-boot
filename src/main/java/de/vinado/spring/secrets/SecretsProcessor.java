@@ -5,19 +5,21 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.StandardEnvironment;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.util.StreamUtils;
 import org.springframework.util.StringUtils;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Locale;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Optional;
+import java.util.function.Function;
 
-import static de.vinado.spring.secrets.Functions.log;
+import static de.vinado.spring.secrets.Functions.doAndLog;
 
 /**
  * A processor that resolves secret files. It's value will replace an existing property value with the same name.
@@ -41,39 +43,55 @@ public abstract class SecretsProcessor extends SinglePropertySourceEnvironmentPo
 
     @Override
     protected MapPropertySource getPropertySource(ConfigurableEnvironment environment, SpringApplication application) {
-        Map<String, Object> source = resolveAll(environment).entrySet().stream()
-            .filter(this::hasNonEmptyValue)
-            .peek(log(log::info, entry -> String.format("Use secret's value to set %s", entry.getKey())))
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        return new MapPropertySource(propertySourceName, source);
+        ResourceLoader resourceLoader = getResourceLoader(application);
+        return new MapPropertySource(propertySourceName, resolveSecretResources(environment, resourceLoader));
     }
 
-    protected abstract Map<String, Object> resolveAll(ConfigurableEnvironment environment);
-
-    protected String convertToPropertyName(Path filename) {
-        File file = filename.toFile();
-        String name = file.getName();
-        String property = name.replace("_", ".");
-        return property.toLowerCase(Locale.US);
+    protected ResourceLoader getResourceLoader(SpringApplication application) {
+        return null == application.getResourceLoader()
+            ? new DefaultResourceLoader()
+            : application.getResourceLoader();
     }
 
-    protected Object getFileContent(Path path) {
-        log.trace(String.format("Reading from secret %s", path));
-        try (Stream<String> lines = Files.lines(path, Charset.defaultCharset())) {
-            StringBuilder builder = new StringBuilder();
-            lines.forEach(builder::append);
-            return builder.toString();
+    protected Map<String, Object> resolveSecretResources(ConfigurableEnvironment environment, ResourceLoader resourceLoader) {
+        Map<String, Object> source = new HashMap<>();
+
+        for (Map.Entry<String, String> entry : getSystemProperties(environment).entrySet()) {
+            String propertyName = entry.getKey();
+            String location = entry.getValue();
+            substitute(location, environment)
+                .flatMap(resolveWith(resourceLoader))
+                .map(this::readContent)
+                .filter(StringUtils::hasText)
+                .ifPresent(doAndLog(add(propertyName, source), log::info, String.format("Use secret's value to set %s", propertyName)));
+        }
+
+        return source;
+    }
+
+    protected abstract Map<String, String> getSystemProperties(ConfigurableEnvironment environment);
+
+    protected Optional<String> substitute(String location, ConfigurableEnvironment environment) {
+        return Optional.of(location);
+    }
+
+    protected Function<String, Optional<Resource>> resolveWith(ResourceLoader resourceLoader) {
+        return location -> loadResource(location, resourceLoader);
+    }
+
+    protected Optional<Resource> loadResource(String location, ResourceLoader resourceLoader) {
+        log.trace(String.format("Reading from secret %s", location));
+        return Optional.of(location)
+            .filter(StringUtils::hasText)
+            .map(resourceLoader::getResource)
+            .filter(Resource::exists);
+    }
+
+    private String readContent(Resource resource) {
+        try (InputStream stream = resource.getInputStream()) {
+            return StreamUtils.copyToString(stream, Charset.defaultCharset()).trim();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private boolean hasNonEmptyValue(Map.Entry<String, Object> entry) {
-        Object value = entry.getValue();
-        if (value instanceof String) {
-            return StringUtils.hasText((String) value);
-        }
-
-        return true;
     }
 }

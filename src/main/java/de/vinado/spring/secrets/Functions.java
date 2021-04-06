@@ -1,7 +1,6 @@
 package de.vinado.spring.secrets;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 /**
@@ -22,9 +21,5 @@ final class Functions {
 
     public static <T> Consumer<T> doAndLog(Consumer<T> consumer, Consumer<Object> level, String format, Object... arguments) {
         return consumer.andThen(p -> level.accept(String.format(format, arguments)));
-    }
-
-    public static <T> Consumer<T> log(Consumer<Object> level, Function<T, String> formatter) {
-        return p -> level.accept(formatter.apply(p));
     }
 }

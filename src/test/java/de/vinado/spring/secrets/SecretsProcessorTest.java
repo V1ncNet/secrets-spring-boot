@@ -9,10 +9,8 @@ import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.logging.DeferredLogFactory;
 import org.springframework.core.env.ConfigurableEnvironment;
 
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -66,13 +64,12 @@ class SecretsProcessorTest {
 
     static class DefaultSecretsProcessor extends SecretsProcessor {
 
-
         private static final Map<String, String> properties = new HashMap<>();
 
         static {
-            properties.put("secret.empty", String.format("%s/src/test/resources/secret.empty", CWD));
-            properties.put("spring.datasource.username", String.format("%s/src/test/resources/spring.datasource.username", CWD));
-            properties.put("spring.datasource.password", String.format("%s/src/test/resources/spring_datasource_password", CWD));
+            properties.put("secret.empty", String.format("file:%s/src/test/resources/secret.empty", CWD));
+            properties.put("spring.datasource.username", String.format("file:%s/src/test/resources/spring.datasource.username", CWD));
+            properties.put("spring.datasource.password", String.format("file:%s/src/test/resources/spring_datasource_password", CWD));
         }
 
         public DefaultSecretsProcessor(DeferredLogFactory logFactory) {
@@ -80,20 +77,8 @@ class SecretsProcessorTest {
         }
 
         @Override
-        protected Map<String, Object> resolveAll(ConfigurableEnvironment environment) {
-            Map<String, Object> source = new HashMap<>();
-
-            for (Map.Entry<String, String> entry : properties.entrySet()) {
-                String propertyName = entry.getKey();
-                String location = entry.getValue();
-                resolve(location).ifPresent(add(propertyName, source));
-            }
-
-            return source;
-        }
-
-        private Optional<Object> resolve(String location) {
-            return Optional.ofNullable(getFileContent(Paths.get(location)));
+        protected Map<String, String> getSystemProperties(ConfigurableEnvironment environment) {
+            return properties;
         }
     }
 }
