@@ -17,25 +17,25 @@ import static org.mockito.Mockito.mock;
 /**
  * @author Vincent Nadoll
  */
-class FilenameSecretsProcessorTest {
+class AutoResolvingFilenameSecretsProcessorTest {
 
     private static final ApplicationContextFactory contextFactory = ApplicationContextFactory.DEFAULT;
 
     private static SpringApplication application;
 
     private ConfigurableEnvironment environment;
-    private FilenameSecretsProcessor processor;
+    private AutoResolvingFilenameSecretsProcessor processor;
 
     @BeforeAll
     static void beforeAll() {
-        System.setProperty(FilenameSecretsProcessor.BASE_DIR_PROPERTY, "${user.dir}/src/test/resources");
+        System.setProperty(AutoResolvingFilenameSecretsProcessor.BASE_DIR_PROPERTY, "${user.dir}/src/test/resources");
         application = mock(SpringApplication.class);
     }
 
     @BeforeEach
     void setUp() {
         environment = contextFactory.create(WebApplicationType.NONE).getEnvironment();
-        processor = new FilenameSecretsProcessor(Supplier::get);
+        processor = new AutoResolvingFilenameSecretsProcessor(Supplier::get);
     }
 
     @Test
