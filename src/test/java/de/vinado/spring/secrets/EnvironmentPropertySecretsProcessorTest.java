@@ -27,7 +27,7 @@ class EnvironmentPropertySecretsProcessorTest {
     private static SpringApplication application;
 
     private ConfigurableEnvironment environment;
-    private EnvironmentPropertySecretsProcessor processor;
+    private DockerSecretProcessor processor;
 
     @BeforeAll
     static void beforeAll() {
