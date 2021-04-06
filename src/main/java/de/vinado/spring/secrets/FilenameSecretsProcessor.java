@@ -2,12 +2,10 @@ package de.vinado.spring.secrets;
 
 import org.apache.commons.logging.Log;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.boot.logging.DeferredLogFactory;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
-import org.springframework.core.env.StandardEnvironment;
 import org.springframework.util.StringUtils;
 
 import java.io.File;
@@ -34,7 +32,7 @@ import java.util.stream.Stream;
  *
  * @author Vincent Nadoll
  */
-public class FilenameSecretsProcessor implements EnvironmentPostProcessor, Ordered {
+public class FilenameSecretsProcessor extends SinglePropertySourceEnvironmentPostProcessor implements Ordered {
 
     public static final String PROPERTY_SOURCE_NAME = "filenameSecrets";
     public static final String BASE_DIR_PROPERTY = "secrets.base-dir";
@@ -46,17 +44,12 @@ public class FilenameSecretsProcessor implements EnvironmentPostProcessor, Order
     }
 
     @Override
-    public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
+    protected MapPropertySource getPropertySource(ConfigurableEnvironment environment, SpringApplication application) {
         String baseDir = environment.getProperty(BASE_DIR_PROPERTY, "/run/secrets");
-        log.trace(String.format("Examine for secrets related in %s", baseDir));
-
-        Map<String, Object> resolved = resolveAll(baseDir).entrySet().stream()
+        Map<String, Object> source = resolveAll(baseDir).entrySet().stream()
             .filter(this::hasNonEmptyValue)
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-        environment.getPropertySources()
-            .addAfter(StandardEnvironment.SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME,
-                new MapPropertySource(PROPERTY_SOURCE_NAME, resolved));
+        return new MapPropertySource(PROPERTY_SOURCE_NAME, source);
     }
 
     private Map<String, Object> resolveAll(String baseDir) {
