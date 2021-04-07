@@ -8,9 +8,7 @@ import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertySource;
 import org.springframework.core.env.StandardEnvironment;
 
-import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.function.UnaryOperator;
 
 /**
  * An environment post processor that adds a single to the index of properties. The position at which the property is
@@ -22,15 +20,7 @@ public abstract class SinglePropertySourceEnvironmentPostProcessor implements En
 
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
-        Optional.of(environment.getPropertySources())
-            .map(peek(adder(getPropertySource(environment, application))));
-    }
-
-    private static UnaryOperator<MutablePropertySources> peek(Consumer<MutablePropertySources> action) {
-        return t -> {
-            action.accept(t);
-            return t;
-        };
+        adder(getPropertySource(environment, application)).accept(environment.getPropertySources());
     }
 
     protected Consumer<MutablePropertySources> adder(PropertySource<?> propertySource) {
