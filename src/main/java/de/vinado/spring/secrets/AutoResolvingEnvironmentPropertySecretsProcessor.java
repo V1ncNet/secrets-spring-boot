@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  *
  * @author Vincent Nadoll
  */
-public class AutoResolvingEnvironmentPropertySecretsProcessor extends EnvironmentPropertySecretsProcessor implements Ordered {
+public final class AutoResolvingEnvironmentPropertySecretsProcessor extends EnvironmentPropertySecretsProcessor implements Ordered {
 
     public static final String PROPERTY_SOURCE_NAME = "autoResolvingEnvironmentPropertySecrets";
 

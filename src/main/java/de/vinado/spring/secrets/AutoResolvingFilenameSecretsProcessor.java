@@ -27,7 +27,7 @@ import java.util.stream.Stream;
  *
  * @author Vincent Nadoll
  */
-public class AutoResolvingFilenameSecretsProcessor extends SecretsProcessor implements Ordered {
+public final class AutoResolvingFilenameSecretsProcessor extends SecretsProcessor implements Ordered {
 
     public static final String PROPERTY_SOURCE_NAME = "autoResolvingFilenameSecrets";
     public static final String BASE_DIR_PROPERTY = "secrets.base-dir";
