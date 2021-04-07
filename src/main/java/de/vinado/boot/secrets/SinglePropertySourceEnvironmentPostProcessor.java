@@ -12,6 +12,12 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
+/**
+ * An environment post processor that adds a single to the index of properties. The position at which the property is
+ * added may be altered by the {@link #adder(String, PropertySource)}-method.
+ *
+ * @author Vincent Nadoll
+ */
 public abstract class SinglePropertySourceEnvironmentPostProcessor implements EnvironmentPostProcessor {
 
     private final String relativePropertySourceName;
