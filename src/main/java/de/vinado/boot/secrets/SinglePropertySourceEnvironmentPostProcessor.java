@@ -14,26 +14,16 @@ import java.util.function.UnaryOperator;
 
 /**
  * An environment post processor that adds a single to the index of properties. The position at which the property is
- * added may be altered by the {@link #adder(String, PropertySource)}-method.
+ * added may be altered by the {@link #adder(PropertySource)}-method.
  *
  * @author Vincent Nadoll
  */
 public abstract class SinglePropertySourceEnvironmentPostProcessor implements EnvironmentPostProcessor {
 
-    private final String relativePropertySourceName;
-
-    public SinglePropertySourceEnvironmentPostProcessor() {
-        this(StandardEnvironment.SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME);
-    }
-
-    public SinglePropertySourceEnvironmentPostProcessor(String relativePropertySourceName) {
-        this.relativePropertySourceName = relativePropertySourceName;
-    }
-
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
         Optional.of(environment.getPropertySources())
-            .map(peek(adder(relativePropertySourceName, getPropertySource(environment, application))));
+            .map(peek(adder(getPropertySource(environment, application))));
     }
 
     private static UnaryOperator<MutablePropertySources> peek(Consumer<MutablePropertySources> action) {
@@ -43,8 +33,8 @@ public abstract class SinglePropertySourceEnvironmentPostProcessor implements En
         };
     }
 
-    protected Consumer<MutablePropertySources> adder(String relativePropertySourceName, PropertySource<?> propertySource) {
-        return sources -> sources.addAfter(relativePropertySourceName, propertySource);
+    protected Consumer<MutablePropertySources> adder(PropertySource<?> propertySource) {
+        return sources -> sources.addAfter(StandardEnvironment.SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME, propertySource);
     }
 
     protected abstract MapPropertySource getPropertySource(ConfigurableEnvironment environment, SpringApplication application);

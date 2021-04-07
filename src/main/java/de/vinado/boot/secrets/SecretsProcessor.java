@@ -4,7 +4,6 @@ import org.apache.commons.logging.Log;
 import org.springframework.boot.SpringApplication;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
-import org.springframework.core.env.StandardEnvironment;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -31,11 +30,6 @@ public abstract class SecretsProcessor extends SinglePropertySourceEnvironmentPo
     private final String propertySourceName;
 
     public SecretsProcessor(Log log, String propertySourceName) {
-        this(log, propertySourceName, StandardEnvironment.SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME);
-    }
-
-    public SecretsProcessor(Log log, String propertySourceName, String relativePropertySourceName) {
-        super(relativePropertySourceName);
         this.log = log;
         this.propertySourceName = propertySourceName;
     }

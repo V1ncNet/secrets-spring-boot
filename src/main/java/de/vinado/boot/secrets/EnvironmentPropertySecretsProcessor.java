@@ -2,7 +2,6 @@ package de.vinado.boot.secrets;
 
 import org.apache.commons.logging.Log;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.StandardEnvironment;
 
 import java.util.Map;
 import java.util.Optional;
@@ -15,11 +14,7 @@ import java.util.Optional;
 public abstract class EnvironmentPropertySecretsProcessor extends SecretsProcessor {
 
     public EnvironmentPropertySecretsProcessor(Log log, String propertySourceName) {
-        this(log, propertySourceName, StandardEnvironment.SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME);
-    }
-
-    public EnvironmentPropertySecretsProcessor(Log log, String propertySourceName, String relativePropertySourceName) {
-        super(log, propertySourceName, relativePropertySourceName);
+        super(log, propertySourceName);
     }
 
     /**
