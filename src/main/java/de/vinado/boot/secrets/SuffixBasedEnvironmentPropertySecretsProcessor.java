@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 public final class SuffixBasedEnvironmentPropertySecretsProcessor extends EnvironmentPropertySecretsProcessor implements Ordered {
 
     public static final String PROPERTY_SOURCE_NAME = "suffixBasedEnvironmentPropertySecrets";
+    public static final String ENV_VAR_SUFFIX = "_FILE";
 
     public SuffixBasedEnvironmentPropertySecretsProcessor(DeferredLogFactory logFactory) {
         super(logFactory.getLog(SuffixBasedEnvironmentPropertySecretsProcessor.class), PROPERTY_SOURCE_NAME);
@@ -32,7 +33,7 @@ public final class SuffixBasedEnvironmentPropertySecretsProcessor extends Enviro
     @Override
     protected Map<String, String> getSystemProperties(ConfigurableEnvironment environment) {
         return environment.getSystemEnvironment().keySet().stream()
-            .filter(endsWith("_FILE"))
+            .filter(endsWith(ENV_VAR_SUFFIX))
             .collect(Collectors.toMap(this::convertToPropertyName, Function.identity()));
     }
 
