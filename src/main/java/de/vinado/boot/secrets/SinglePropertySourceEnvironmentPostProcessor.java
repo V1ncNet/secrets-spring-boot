@@ -1,4 +1,4 @@
-package de.vinado.spring.secrets;
+package de.vinado.boot.secrets;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;

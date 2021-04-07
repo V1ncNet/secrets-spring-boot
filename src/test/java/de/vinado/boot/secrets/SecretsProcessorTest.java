@@ -1,4 +1,4 @@
-package de.vinado.spring.secrets;
+package de.vinado.boot.secrets;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -6,8 +6,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.ApplicationContextFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
+import org.springframework.boot.logging.DeferredLogFactory;
 import org.springframework.core.env.ConfigurableEnvironment;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -17,25 +20,25 @@ import static org.mockito.Mockito.mock;
 /**
  * @author Vincent Nadoll
  */
-class AutoResolvingFilenameSecretsProcessorTest {
+class SecretsProcessorTest {
 
+    private static final String CWD = System.getProperty("user.dir");
     private static final ApplicationContextFactory contextFactory = ApplicationContextFactory.DEFAULT;
 
     private static SpringApplication application;
 
     private ConfigurableEnvironment environment;
-    private AutoResolvingFilenameSecretsProcessor processor;
+    private DefaultSecretsProcessor processor;
 
     @BeforeAll
     static void beforeAll() {
-        System.setProperty(AutoResolvingFilenameSecretsProcessor.BASE_DIR_PROPERTY, "${user.dir}/src/test/resources");
         application = mock(SpringApplication.class);
     }
 
     @BeforeEach
     void setUp() {
         environment = contextFactory.create(WebApplicationType.NONE).getEnvironment();
-        processor = new AutoResolvingFilenameSecretsProcessor(Supplier::get);
+        processor = new DefaultSecretsProcessor(Supplier::get);
     }
 
     @Test
@@ -57,5 +60,25 @@ class AutoResolvingFilenameSecretsProcessorTest {
         processor.postProcessEnvironment(environment, application);
 
         assertNull(environment.getProperty("secret.empty"));
+    }
+
+    static class DefaultSecretsProcessor extends SecretsProcessor {
+
+        private static final Map<String, String> properties = new HashMap<>();
+
+        static {
+            properties.put("secret.empty", String.format("file:%s/src/test/resources/secret.empty", CWD));
+            properties.put("spring.datasource.username", String.format("file:%s/src/test/resources/spring.datasource.username", CWD));
+            properties.put("spring.datasource.password", String.format("file:%s/src/test/resources/spring_datasource_password", CWD));
+        }
+
+        public DefaultSecretsProcessor(DeferredLogFactory logFactory) {
+            super(logFactory.getLog(DefaultSecretsProcessor.class), "defaultSecrets");
+        }
+
+        @Override
+        protected Map<String, String> getSystemProperties(ConfigurableEnvironment environment) {
+            return properties;
+        }
     }
 }

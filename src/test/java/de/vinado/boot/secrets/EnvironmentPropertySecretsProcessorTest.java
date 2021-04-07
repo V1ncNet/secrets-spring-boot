@@ -1,4 +1,4 @@
-package de.vinado.spring.secrets;
+package de.vinado.boot.secrets;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;

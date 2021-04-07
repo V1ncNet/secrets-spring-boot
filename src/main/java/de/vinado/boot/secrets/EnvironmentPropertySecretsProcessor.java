@@ -1,4 +1,4 @@
-package de.vinado.spring.secrets;
+package de.vinado.boot.secrets;
 
 import org.apache.commons.logging.Log;
 import org.springframework.core.env.ConfigurableEnvironment;
