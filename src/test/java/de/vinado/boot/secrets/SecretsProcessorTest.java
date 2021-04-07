@@ -11,6 +11,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -62,6 +63,13 @@ class SecretsProcessorTest {
         assertNull(environment.getProperty("secret.empty"));
     }
 
+    @Test
+    void randomText_shouldNotSetProperty() {
+        processor.postProcessEnvironment(environment, application);
+
+        assertNull(environment.getProperty("secret.uuid"));
+    }
+
     static class DefaultSecretsProcessor extends SecretsProcessor {
 
         private static final Map<String, String> properties = new HashMap<>();
@@ -70,6 +78,7 @@ class SecretsProcessorTest {
             properties.put("secret.empty", String.format("file:%s/src/test/resources/secret.empty", CWD));
             properties.put("spring.datasource.username", String.format("file:%s/src/test/resources/spring.datasource.username", CWD));
             properties.put("spring.datasource.password", "classpath:spring_datasource_password");
+            properties.put("secret.uuid", UUID.randomUUID().toString());
         }
 
         public DefaultSecretsProcessor(DeferredLogFactory logFactory) {

@@ -12,9 +12,11 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -58,6 +60,15 @@ class EnvironmentPropertySecretsProcessorTest {
         assertEquals("password1234", environment.getProperty("spring.datasource.password"));
     }
 
+    @Test
+    void text_shouldNotSetProperty() {
+        setProperty("SECRET_UUID", UUID.randomUUID().toString());
+
+        processor.postProcessEnvironment(environment, application);
+
+        assertNull(environment.getProperty("secret.uuid"));
+    }
+
     private void setProperty(String key, String value) {
         when(environment.getSystemEnvironment()).thenReturn(Collections.singletonMap(key, value));
         when(environment.getProperty(key)).thenReturn(value);
@@ -70,6 +81,7 @@ class EnvironmentPropertySecretsProcessorTest {
         static {
             properties.put("spring.datasource.username", "DATABASE_USER");
             properties.put("spring.datasource.password", "DATABASE_PASSWORD");
+            properties.put("secret.uuid", "SECRET_UUID");
         }
 
         public DockerSecretProcessor(DeferredLogFactory logFactory) {

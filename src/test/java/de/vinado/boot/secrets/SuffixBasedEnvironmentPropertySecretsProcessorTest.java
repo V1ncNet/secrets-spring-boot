@@ -9,6 +9,7 @@ import org.springframework.boot.WebApplicationType;
 import org.springframework.core.env.ConfigurableEnvironment;
 
 import java.util.Collections;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -93,6 +94,15 @@ class SuffixBasedEnvironmentPropertySecretsProcessorTest {
         processor.postProcessEnvironment(environment, application);
 
         assertNull(environment.getProperty("empty.secret"));
+    }
+
+    @Test
+    void randomText_shouldNotSetProperty() {
+        setProperty("SECRET_UUID_FILE", UUID.randomUUID().toString());
+
+        processor.postProcessEnvironment(environment, application);
+
+        assertNull(environment.getProperty("secret.uuid"));
     }
 
     private void setProperty(String key, String value) {
