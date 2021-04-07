@@ -27,7 +27,7 @@ import java.util.function.Function;
  */
 public abstract class SecretsProcessor extends SinglePropertySourceEnvironmentPostProcessor {
 
-    private final Log log;
+    protected final Log log;
     private final String propertySourceName;
 
     public SecretsProcessor(Log log, String propertySourceName) {

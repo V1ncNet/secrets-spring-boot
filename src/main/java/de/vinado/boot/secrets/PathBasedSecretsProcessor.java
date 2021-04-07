@@ -45,7 +45,7 @@ public final class PathBasedSecretsProcessor extends SecretsProcessor implements
             .filter(Files::isDirectory)
             .map(this::listFiles)
             .orElse(Stream.empty())
-            .collect(Collectors.toMap(this::convertToPropertyName, this::toUri));
+            .collect(Collectors.toMap(this::convertToPropertyName, this::toUri, this::firstComeFirstServe));
     }
 
     private Stream<Path> listFiles(Path path) {
@@ -65,6 +65,11 @@ public final class PathBasedSecretsProcessor extends SecretsProcessor implements
 
     private String toUri(Path path) {
         return path.toUri().toString();
+    }
+
+    private String firstComeFirstServe(String existing, String replacement) {
+        log.warn(String.format("Encountered duplicates. Secret in %s will be ignored. Reading content of %s instead.", replacement, existing));
+        return existing;
     }
 
     @Override
