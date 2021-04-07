@@ -56,7 +56,7 @@ public final class PathBasedSecretsProcessor extends SecretsProcessor implements
         }
     }
 
-    protected String convertToPropertyName(Path filename) {
+    private String convertToPropertyName(Path filename) {
         File file = filename.toFile();
         String name = file.getName();
         String property = name.replace("_", ".");
