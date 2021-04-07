@@ -21,12 +21,12 @@ import java.util.stream.Collectors;
  *
  * @author Vincent Nadoll
  */
-public final class AutoResolvingEnvironmentPropertySecretsProcessor extends EnvironmentPropertySecretsProcessor implements Ordered {
+public final class SuffixBasedEnvironmentPropertySecretsProcessor extends EnvironmentPropertySecretsProcessor implements Ordered {
 
-    public static final String PROPERTY_SOURCE_NAME = "autoResolvingEnvironmentPropertySecrets";
+    public static final String PROPERTY_SOURCE_NAME = "suffixBasedEnvironmentPropertySecrets";
 
-    public AutoResolvingEnvironmentPropertySecretsProcessor(DeferredLogFactory logFactory) {
-        super(logFactory.getLog(AutoResolvingEnvironmentPropertySecretsProcessor.class), PROPERTY_SOURCE_NAME);
+    public SuffixBasedEnvironmentPropertySecretsProcessor(DeferredLogFactory logFactory) {
+        super(logFactory.getLog(SuffixBasedEnvironmentPropertySecretsProcessor.class), PROPERTY_SOURCE_NAME);
     }
 
     @Override

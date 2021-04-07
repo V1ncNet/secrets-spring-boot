@@ -27,14 +27,14 @@ import java.util.stream.Stream;
  *
  * @author Vincent Nadoll
  */
-public final class AutoResolvingFilenameSecretsProcessor extends SecretsProcessor implements Ordered {
+public final class PathBasedSecretsProcessor extends SecretsProcessor implements Ordered {
 
-    public static final String PROPERTY_SOURCE_NAME = "autoResolvingFilenameSecrets";
+    public static final String PROPERTY_SOURCE_NAME = "pathBasedSecrets";
     public static final String BASE_DIR_PROPERTY = "secrets.base-dir";
     private static final String DEFAULT_BASE_DIR_PROPERTY = "/run/secrets";
 
-    public AutoResolvingFilenameSecretsProcessor(DeferredLogFactory logFactory) {
-        super(logFactory.getLog(AutoResolvingFilenameSecretsProcessor.class), PROPERTY_SOURCE_NAME);
+    public PathBasedSecretsProcessor(DeferredLogFactory logFactory) {
+        super(logFactory.getLog(PathBasedSecretsProcessor.class), PROPERTY_SOURCE_NAME);
     }
 
     @Override

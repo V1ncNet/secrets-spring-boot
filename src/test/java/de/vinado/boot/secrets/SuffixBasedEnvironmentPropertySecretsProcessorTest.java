@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 /**
  * @author Vincent Nadoll
  */
-class AutoResolvingEnvironmentPropertySecretsProcessorTest {
+class SuffixBasedEnvironmentPropertySecretsProcessorTest {
 
     private static final String CWD = System.getProperty("user.dir");
     private static final ApplicationContextFactory contextFactory = ApplicationContextFactory.DEFAULT;
@@ -28,7 +28,7 @@ class AutoResolvingEnvironmentPropertySecretsProcessorTest {
     private static SpringApplication application;
 
     private ConfigurableEnvironment environment;
-    private AutoResolvingEnvironmentPropertySecretsProcessor processor;
+    private SuffixBasedEnvironmentPropertySecretsProcessor processor;
 
     @BeforeAll
     static void beforeAll() {
@@ -38,7 +38,7 @@ class AutoResolvingEnvironmentPropertySecretsProcessorTest {
     @BeforeEach
     void setUp() {
         environment = spy(contextFactory.create(WebApplicationType.NONE).getEnvironment());
-        processor = new AutoResolvingEnvironmentPropertySecretsProcessor(Supplier::get);
+        processor = new SuffixBasedEnvironmentPropertySecretsProcessor(Supplier::get);
     }
 
     @Test
