@@ -69,7 +69,7 @@ class SecretsProcessorTest {
         static {
             properties.put("secret.empty", String.format("file:%s/src/test/resources/secret.empty", CWD));
             properties.put("spring.datasource.username", String.format("file:%s/src/test/resources/spring.datasource.username", CWD));
-            properties.put("spring.datasource.password", String.format("file:%s/src/test/resources/spring_datasource_password", CWD));
+            properties.put("spring.datasource.password", "classpath:spring_datasource_password");
         }
 
         public DefaultSecretsProcessor(DeferredLogFactory logFactory) {
