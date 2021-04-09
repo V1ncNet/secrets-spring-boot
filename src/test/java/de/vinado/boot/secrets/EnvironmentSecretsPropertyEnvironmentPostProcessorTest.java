@@ -3,10 +3,9 @@ package de.vinado.boot.secrets;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.ApplicationContextFactory;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.WebApplicationType;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.StandardEnvironment;
 
 import java.util.Collections;
 import java.util.UUID;
@@ -21,15 +20,12 @@ import static org.mockito.Mockito.when;
 /**
  * @author Vincent Nadoll
  */
-class SuffixBasedEnvironmentPropertySecretsProcessorTest {
-
-    private static final String CWD = System.getProperty("user.dir");
-    private static final ApplicationContextFactory contextFactory = ApplicationContextFactory.DEFAULT;
+class EnvironmentSecretsPropertyEnvironmentPostProcessorTest {
 
     private static SpringApplication application;
 
     private ConfigurableEnvironment environment;
-    private SuffixBasedEnvironmentPropertySecretsProcessor processor;
+    private EnvironmentSecretsPropertyEnvironmentPostProcessor processor;
 
     @BeforeAll
     static void beforeAll() {
@@ -38,8 +34,8 @@ class SuffixBasedEnvironmentPropertySecretsProcessorTest {
 
     @BeforeEach
     void setUp() {
-        environment = spy(contextFactory.create(WebApplicationType.NONE).getEnvironment());
-        processor = new SuffixBasedEnvironmentPropertySecretsProcessor(Supplier::get);
+        environment = spy(new StandardEnvironment());
+        processor = new EnvironmentSecretsPropertyEnvironmentPostProcessor(Supplier::get);
     }
 
     @Test
@@ -53,7 +49,7 @@ class SuffixBasedEnvironmentPropertySecretsProcessorTest {
 
     @Test
     void fileUri_shouldSetPasswordProperty() {
-        setProperty("SPRING_DATASOURCE_PASSWORD_FILE", String.format("file:%s/src/test/resources/spring_datasource_password", CWD));
+        setProperty("SPRING_DATASOURCE_PASSWORD_FILE", String.format("file:%s/src/test/resources/spring_datasource_password", System.getProperty("user.dir")));
 
         processor.postProcessEnvironment(environment, application);
 
