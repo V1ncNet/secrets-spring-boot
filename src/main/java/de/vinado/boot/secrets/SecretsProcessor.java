@@ -2,6 +2,7 @@ package de.vinado.boot.secrets;
 
 import org.apache.commons.logging.Log;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.io.DefaultResourceLoader;
@@ -16,7 +17,7 @@ import java.util.function.Consumer;
  *
  * @author Vincent Nadoll
  */
-public abstract class SecretsProcessor extends SinglePropertySourceEnvironmentPostProcessor {
+public abstract class SecretsProcessor implements EnvironmentPostProcessor {
 
     protected final Log log;
 
@@ -25,6 +26,11 @@ public abstract class SecretsProcessor extends SinglePropertySourceEnvironmentPo
     }
 
     @Override
+    public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
+        MapPropertySource propertySource = getPropertySource(environment, application);
+        SecretPropertiesPropertySource.merge(propertySource.getSource(), environment.getPropertySources());
+    }
+
     protected MapPropertySource getPropertySource(ConfigurableEnvironment environment, SpringApplication application) {
         ResourceLoader resourceLoader = getResourceLoader(application);
         return new MapPropertySource(SecretPropertiesPropertySource.NAME, resolveSecretResources(environment, resourceLoader));
