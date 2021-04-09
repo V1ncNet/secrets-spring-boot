@@ -2,9 +2,9 @@ package de.vinado.boot.secrets;
 
 import org.apache.commons.logging.Log;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.io.ResourceLoader;
 
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * A processor that resolves environment variables and loads the file content from its value.
@@ -25,8 +25,8 @@ public abstract class EnvironmentPropertySecretsProcessor extends SecretsProcess
     protected abstract Map<String, String> getSystemProperties(ConfigurableEnvironment environment);
 
     @Override
-    protected Optional<String> substitute(String location, ConfigurableEnvironment environment) {
-        return Optional.of(location)
-            .map(environment::getProperty);
+    protected SecretResolver getResolver(ConfigurableEnvironment environment, ResourceLoader resourceLoader) {
+        EnvironmentPropertySubstituter substituter = new EnvironmentPropertySubstituter(environment);
+        return new DefaultSecretResolver(substituter, resourceLoader);
     }
 }

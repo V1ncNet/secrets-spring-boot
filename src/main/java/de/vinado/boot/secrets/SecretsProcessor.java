@@ -5,19 +5,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.util.StreamUtils;
-import org.springframework.util.StringUtils;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 /**
  * A processor that resolves secret files. It's value will replace an existing property value with the same name.
@@ -52,10 +44,7 @@ public abstract class SecretsProcessor extends SinglePropertySourceEnvironmentPo
         for (Map.Entry<String, String> entry : getSystemProperties(environment).entrySet()) {
             String propertyName = entry.getKey();
             String location = entry.getValue();
-            substitute(location, environment)
-                .flatMap(resolveWith(resourceLoader))
-                .map(this::readContent)
-                .filter(StringUtils::hasText)
+            getResolver(environment, resourceLoader).loadContent(location)
                 .ifPresent(doAndLog(add(propertyName, source), log::info, String.format("Use secret's value to set %s", propertyName)));
         }
 
@@ -64,28 +53,15 @@ public abstract class SecretsProcessor extends SinglePropertySourceEnvironmentPo
 
     protected abstract Map<String, String> getSystemProperties(ConfigurableEnvironment environment);
 
-    protected Optional<String> substitute(String location, ConfigurableEnvironment environment) {
-        return Optional.of(location);
-    }
-
-    protected Function<String, Optional<Resource>> resolveWith(ResourceLoader resourceLoader) {
-        return location -> loadResource(location, resourceLoader);
-    }
-
-    protected Optional<Resource> loadResource(String location, ResourceLoader resourceLoader) {
-        log.trace(String.format("Reading from secret %s", location));
-        return Optional.of(location)
-            .filter(StringUtils::hasText)
-            .map(resourceLoader::getResource)
-            .filter(Resource::exists);
-    }
-
-    private String readContent(Resource resource) {
-        try (InputStream stream = resource.getInputStream()) {
-            return StreamUtils.copyToString(stream, Charset.defaultCharset()).trim();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    /**
+     * Creates a new instance of {@link SecretResolver}.
+     *
+     * @param environment    the environment this post-processor runs in
+     * @param resourceLoader
+     * @return new {@link SecretResolver}
+     */
+    protected SecretResolver getResolver(ConfigurableEnvironment environment, ResourceLoader resourceLoader) {
+        return new DefaultSecretResolver(resourceLoader);
     }
 
     public static Consumer<Object> doAndLog(Consumer<Object> consumer, Consumer<Object> level, String format, Object... arguments) {
