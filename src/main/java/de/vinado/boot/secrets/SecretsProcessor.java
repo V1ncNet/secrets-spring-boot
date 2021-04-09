@@ -4,7 +4,6 @@ import org.apache.commons.logging.Log;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.ResourceLoader;
 
@@ -27,13 +26,9 @@ public abstract class SecretsProcessor implements EnvironmentPostProcessor {
 
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
-        MapPropertySource propertySource = getPropertySource(environment, application);
-        SecretPropertiesPropertySource.merge(propertySource.getSource(), environment.getPropertySources());
-    }
-
-    protected MapPropertySource getPropertySource(ConfigurableEnvironment environment, SpringApplication application) {
         ResourceLoader resourceLoader = getResourceLoader(application);
-        return new MapPropertySource(SecretPropertiesPropertySource.NAME, resolveSecretResources(environment, resourceLoader));
+        SecretPropertiesPropertySource.merge(resolveSecretResources(environment, resourceLoader),
+            environment.getPropertySources());
     }
 
     protected ResourceLoader getResourceLoader(SpringApplication application) {
