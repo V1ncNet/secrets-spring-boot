@@ -82,7 +82,7 @@ class SecretsProcessorTest {
         }
 
         public DefaultSecretsProcessor(DeferredLogFactory logFactory) {
-            super(logFactory.getLog(DefaultSecretsProcessor.class), "defaultSecrets");
+            super(logFactory.getLog(DefaultSecretsProcessor.class));
         }
 
         @Override

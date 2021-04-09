@@ -85,7 +85,7 @@ class EnvironmentPropertySecretsProcessorTest {
         }
 
         public DockerSecretProcessor(DeferredLogFactory logFactory) {
-            super(logFactory.getLog(DockerSecretProcessor.class), "dockerSecrets");
+            super(logFactory.getLog(DockerSecretProcessor.class));
         }
 
         @Override

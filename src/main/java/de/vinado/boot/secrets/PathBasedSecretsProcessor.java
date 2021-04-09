@@ -29,12 +29,11 @@ import java.util.stream.Stream;
  */
 public final class PathBasedSecretsProcessor extends SecretsProcessor implements Ordered {
 
-    public static final String PROPERTY_SOURCE_NAME = "pathBasedSecrets";
     public static final String BASE_DIR_PROPERTY = "secrets.base-dir";
     private static final String DEFAULT_BASE_DIR_PROPERTY = "/run/secrets";
 
     public PathBasedSecretsProcessor(DeferredLogFactory logFactory) {
-        super(logFactory.getLog(PathBasedSecretsProcessor.class), PROPERTY_SOURCE_NAME);
+        super(logFactory.getLog(PathBasedSecretsProcessor.class));
     }
 
     @Override

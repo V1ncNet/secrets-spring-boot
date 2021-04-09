@@ -19,17 +19,15 @@ import java.util.function.Consumer;
 public abstract class SecretsProcessor extends SinglePropertySourceEnvironmentPostProcessor {
 
     protected final Log log;
-    private final String propertySourceName;
 
-    public SecretsProcessor(Log log, String propertySourceName) {
+    public SecretsProcessor(Log log) {
         this.log = log;
-        this.propertySourceName = propertySourceName;
     }
 
     @Override
     protected MapPropertySource getPropertySource(ConfigurableEnvironment environment, SpringApplication application) {
         ResourceLoader resourceLoader = getResourceLoader(application);
-        return new MapPropertySource(propertySourceName, resolveSecretResources(environment, resourceLoader));
+        return new MapPropertySource(SecretPropertiesPropertySource.NAME, resolveSecretResources(environment, resourceLoader));
     }
 
     protected ResourceLoader getResourceLoader(SpringApplication application) {

@@ -23,11 +23,10 @@ import java.util.stream.Collectors;
  */
 public final class SuffixBasedEnvironmentPropertySecretsProcessor extends EnvironmentPropertySecretsProcessor implements Ordered {
 
-    public static final String PROPERTY_SOURCE_NAME = "suffixBasedEnvironmentPropertySecrets";
     public static final String ENV_VAR_SUFFIX = "_FILE";
 
     public SuffixBasedEnvironmentPropertySecretsProcessor(DeferredLogFactory logFactory) {
-        super(logFactory.getLog(SuffixBasedEnvironmentPropertySecretsProcessor.class), PROPERTY_SOURCE_NAME);
+        super(logFactory.getLog(SuffixBasedEnvironmentPropertySecretsProcessor.class));
     }
 
     @Override

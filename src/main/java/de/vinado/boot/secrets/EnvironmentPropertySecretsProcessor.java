@@ -13,8 +13,8 @@ import java.util.Map;
  */
 public abstract class EnvironmentPropertySecretsProcessor extends SecretsProcessor {
 
-    public EnvironmentPropertySecretsProcessor(Log log, String propertySourceName) {
-        super(log, propertySourceName);
+    public EnvironmentPropertySecretsProcessor(Log log) {
+        super(log);
     }
 
     /**
