@@ -4,10 +4,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.ApplicationContextFactory;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.WebApplicationType;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.StandardEnvironment;
 
 import java.io.File;
 import java.util.function.Consumer;
@@ -20,14 +19,12 @@ import static org.mockito.Mockito.mock;
 /**
  * @author Vincent Nadoll
  */
-class PathBasedSecretsProcessorTest {
-
-    private static final ApplicationContextFactory contextFactory = ApplicationContextFactory.DEFAULT;
+class FilenameSecretsEnvironmentPostProcessorTest {
 
     private static SpringApplication application;
 
     private ConfigurableEnvironment environment;
-    private PathBasedSecretsProcessor processor;
+    private FilenameSecretsEnvironmentPostProcessor processor;
 
     @BeforeAll
     static void beforeAll() {
@@ -37,8 +34,8 @@ class PathBasedSecretsProcessorTest {
 
     @BeforeEach
     void setUp() {
-        environment = contextFactory.create(WebApplicationType.NONE).getEnvironment();
-        processor = new PathBasedSecretsProcessor(Supplier::get);
+        environment = new StandardEnvironment();
+        processor = new FilenameSecretsEnvironmentPostProcessor(Supplier::get);
     }
 
     @Test
