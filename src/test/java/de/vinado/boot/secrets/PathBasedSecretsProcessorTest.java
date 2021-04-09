@@ -31,7 +31,7 @@ class PathBasedSecretsProcessorTest {
 
     @BeforeAll
     static void beforeAll() {
-        System.setProperty(PathBasedSecretsProcessor.BASE_DIR_PROPERTY, "${user.dir}/src/test/resources");
+        System.setProperty(FilenamePropertyIndexSupplier.BASE_DIR_PROPERTY, "${user.dir}/src/test/resources");
         application = mock(SpringApplication.class);
     }
 
