@@ -1,5 +1,6 @@
 package de.vinado.boot.secrets;
 
+import org.springframework.boot.context.config.ConfigDataEnvironmentPostProcessor;
 import org.springframework.boot.logging.DeferredLogFactory;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -12,7 +13,7 @@ import org.springframework.core.io.ResourceLoader;
  */
 public final class FilenameSecretsEnvironmentPostProcessor extends SecretsEnvironmentPostProcessor implements Ordered {
 
-    public static final int ORDER = EnvironmentSecretsPropertyEnvironmentPostProcessor.ORDER + 1;
+    public static final int ORDER = ConfigDataEnvironmentPostProcessor.ORDER + 100;
 
     private final DeferredLogFactory logFactory;
 

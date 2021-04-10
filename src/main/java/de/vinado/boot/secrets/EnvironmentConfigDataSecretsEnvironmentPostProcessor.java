@@ -15,7 +15,7 @@ import org.springframework.core.io.ResourceLoader;
 public final class EnvironmentConfigDataSecretsEnvironmentPostProcessor extends SecretsEnvironmentPostProcessor implements Ordered {
 
     public static final String CONFIG_DATA_INFIX = "env";
-    public static final int ORDER = ConfigDataEnvironmentPostProcessor.ORDER + 10;
+    public static final int ORDER = FilenameConfigDataSecretsEnvironmentPostProcessor.ORDER + 1;
 
     private final DeferredLogFactory logFactory;
 

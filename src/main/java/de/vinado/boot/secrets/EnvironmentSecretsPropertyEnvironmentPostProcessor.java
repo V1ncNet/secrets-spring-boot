@@ -13,7 +13,7 @@ import org.springframework.core.io.ResourceLoader;
 public final class EnvironmentSecretsPropertyEnvironmentPostProcessor extends SecretsEnvironmentPostProcessor implements Ordered {
 
     public static final String ENV_VAR_SUFFIX = "_FILE";
-    public static final int ORDER = Ordered.LOWEST_PRECEDENCE - 10;
+    public static final int ORDER = EnvironmentConfigDataSecretsEnvironmentPostProcessor.ORDER + 1;
 
     private final DeferredLogFactory logFactory;
 
