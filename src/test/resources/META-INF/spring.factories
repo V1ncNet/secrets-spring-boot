@@ -1,4 +1,5 @@
 org.springframework.boot.env.EnvironmentPostProcessor=\
   de.vinado.boot.secrets.FilenameConfigDataSecretsEnvironmentPostProcessor,\
+  de.vinado.boot.secrets.EnvironmentConfigDataSecretsEnvironmentPostProcessor,\
   de.vinado.boot.secrets.FilenameSecretsEnvironmentPostProcessor,\
   de.vinado.boot.secrets.EnvironmentSecretsPropertyEnvironmentPostProcessor

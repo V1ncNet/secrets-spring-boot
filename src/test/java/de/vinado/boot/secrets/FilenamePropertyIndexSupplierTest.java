@@ -32,7 +32,7 @@ class FilenamePropertyIndexSupplierTest {
         Map<String, String> index = supplier.get();
 
         assertNotNull(index);
-        assertEquals(5, index.size());
+        assertEquals(6, index.size());
 
         assertTrue(index.containsKey("secret.empty"));
         assertEquals(fromFile("secret.empty"), index.get("secret.empty"));
@@ -48,6 +48,9 @@ class FilenamePropertyIndexSupplierTest {
 
         assertTrue(index.containsKey("application-file-sample.properties"));
         assertEquals(fromFile("application-file-sample.properties"), index.get("application-file-sample.properties"));
+
+        assertTrue(index.containsKey("application-env-sample.properties"));
+        assertEquals(fromFile("application-env-sample.properties"), index.get("application-env-sample.properties"));
     }
 
     private static String fromFile(String name) {
