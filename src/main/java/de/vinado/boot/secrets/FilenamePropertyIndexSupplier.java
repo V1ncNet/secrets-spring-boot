@@ -62,8 +62,7 @@ public class FilenamePropertyIndexSupplier implements PropertyIndexSupplier {
     private String convertToPropertyName(Path filename) {
         File file = filename.toFile();
         String name = file.getName();
-        String property = name.replace("_", ".");
-        return property.toLowerCase(Locale.US);
+        return name.toLowerCase(Locale.US);
     }
 
     private String toUri(Path path) {
