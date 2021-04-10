@@ -23,13 +23,13 @@ import java.util.stream.Stream;
  * won't be altered.
  * <p>
  * The supplier will fall back to <em>/run/secrets</em>, Docker's default secretes path, in case
- * <em>secrets.base-dir</em> is not set.
+ * <em>secrets.file.base-dir</em> is not set.
  *
  * @author Vincent Nadoll
  */
 public class FilenamePropertyIndexSupplier implements PropertyIndexSupplier {
 
-    public static final String BASE_DIR_PROPERTY = "secrets.base-dir";
+    public static final String BASE_DIR_PROPERTY = "secrets.file.base-dir";
     private static final String DEFAULT_BASE_DIR_PROPERTY = "/run/secrets";
 
     private final Log log;
