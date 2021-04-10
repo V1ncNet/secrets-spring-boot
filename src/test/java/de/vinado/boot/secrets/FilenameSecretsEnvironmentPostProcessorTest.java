@@ -3,6 +3,7 @@ package de.vinado.boot.secrets;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.SpringApplication;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -61,6 +62,7 @@ class FilenameSecretsEnvironmentPostProcessorTest {
     }
 
     @Test
+    @Disabled("Disabled until implementation of configurable separator")
     void underscoreSeparatedSecretFile_shouldSetSmtpHost() {
         processor.postProcessEnvironment(environment, application);
 
