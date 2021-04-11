@@ -57,7 +57,7 @@ public class FilenamePropertyIndexSupplier implements PropertyIndexSupplier {
             .map(this::listFiles)
             .orElse(Stream.empty())
             .filter(testAndLogFailure(this::isAllowed, log::warn, "Skipping ambiguous file %s, because of separator '%c'", Path::toAbsolutePath, path -> separator))
-            .collect(Collectors.toMap(this::convertToPropertyName, this::toUri, this::firstComeFirstServe));
+            .collect(Collectors.toMap(this::convertToPropertyName, this::toUri));
     }
 
     private Stream<Path> listFiles(Path path) {
@@ -109,11 +109,5 @@ public class FilenamePropertyIndexSupplier implements PropertyIndexSupplier {
 
     private String toUri(Path path) {
         return path.toUri().toString();
-    }
-
-    private String firstComeFirstServe(String existing, String replacement) {
-        log.warn(LogMessage.format("Encountered duplicates. Secret in %s will be ignored. Reading content of %s instead.",
-            replacement, existing));
-        return existing;
     }
 }
