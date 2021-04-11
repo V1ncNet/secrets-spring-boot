@@ -8,13 +8,15 @@ import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertySource;
 import org.springframework.core.env.PropertySourcesPropertyResolver;
-import org.springframework.core.log.LogMessage;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static de.vinado.boot.secrets.Utils.startsWith;
+import static de.vinado.boot.secrets.Utils.substring;
+import static de.vinado.boot.secrets.Utils.testAndLogFailure;
 
 /**
  * A supplier implementation for creating a property index over a map of application configuration properties from
@@ -51,23 +53,11 @@ public class ConfigDataPropertyIndexSupplier implements PropertyIndexSupplier {
             .map(Map::keySet)
             .flatMap(Set::stream)
             .filter(startsWith(prefix))
-            .filter(this::isValid)
+            .filter(testAndLogFailure(this::isValid, log::warn, "Property [%s] is too short to assign.", Function.identity()))
             .collect(Collectors.toMap(substring(prefix.length() + 1), resolver::getProperty));
     }
 
-    private static Predicate<String> startsWith(String prefix) {
-        return key -> key.startsWith(prefix);
-    }
-
     private boolean isValid(String property) {
-        boolean valid = property.length() >= prefix.length() + 1;
-        if (!valid) {
-            log.warn(LogMessage.format("Property [%s] is too short to assign.", property));
-        }
-        return valid;
-    }
-
-    private static UnaryOperator<String> substring(int beginIndex) {
-        return str -> str.substring(beginIndex);
+        return property.length() >= prefix.length() + 1;
     }
 }

@@ -4,14 +4,12 @@ import lombok.NonNull;
 import org.apache.commons.logging.Log;
 import org.springframework.boot.logging.DeferredLogFactory;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.log.LogMessage;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
+
+import static de.vinado.boot.secrets.Utils.doAndLog;
 
 /**
  * A wrapper around {@link ConfigurableEnvironment} which loads secrets and applies them to
@@ -50,24 +48,6 @@ public class SecretsEnvironment {
             resolver.loadContent(location)
                 .ifPresent(doAndLog(add(propertyName), log::info, "Use secret value to set %s", propertyValue -> propertyName));
         }
-    }
-
-    @SafeVarargs
-    private static <T> Consumer<T> doAndLog(Consumer<T> consumer, Consumer<Object> level, String format,
-                                            Function<T, Object>... argumentTransformers) {
-        Consumer<T> after = p -> {
-            Object[] args = Arrays.stream(argumentTransformers)
-                .map(transformer -> transformer.apply(p))
-                .filter(not(Throwable.class::isInstance))
-                .toArray(Object[]::new);
-            LogMessage message = LogMessage.format(format, args);
-            level.accept(message);
-        };
-        return consumer.andThen(after);
-    }
-
-    private static <T> Predicate<T> not(Predicate<T> input) {
-        return input.negate();
     }
 
     private Consumer<Object> add(String systemProperty) {
