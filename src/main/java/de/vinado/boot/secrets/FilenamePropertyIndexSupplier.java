@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -50,6 +51,7 @@ public class FilenamePropertyIndexSupplier implements PropertyIndexSupplier {
             .filter(Files::isDirectory)
             .map(this::listFiles)
             .orElse(Stream.empty())
+            .filter(this::isAllowed)
             .collect(Collectors.toMap(this::convertToPropertyName, this::toUri, this::firstComeFirstServe));
     }
 
@@ -59,6 +61,20 @@ public class FilenamePropertyIndexSupplier implements PropertyIndexSupplier {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private boolean isAllowed(Path filename) {
+        return isDefaultSeparator() || !containsDefaultSeparator(filename);
+    }
+
+    private boolean isDefaultSeparator() {
+        return Objects.equals(environment.getProperty(SEPARATOR_PROPERTY, Character.class, DEFAULT_SEPARATOR), DEFAULT_SEPARATOR);
+    }
+
+    private boolean containsDefaultSeparator(Path filename) {
+        File file = filename.toFile();
+        String name = file.getName();
+        return name.lastIndexOf(String.valueOf(DEFAULT_SEPARATOR)) > 0;
     }
 
     private String convertToPropertyName(Path filename) {
