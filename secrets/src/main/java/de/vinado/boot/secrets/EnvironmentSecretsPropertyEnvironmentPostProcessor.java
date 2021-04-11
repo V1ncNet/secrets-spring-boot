@@ -4,6 +4,8 @@ import org.springframework.boot.logging.DeferredLogFactory;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
 
+import java.util.function.Supplier;
+
 /**
  * An environment post-processor that resolves every environment variable with a <em>_FILE</em> suffix.
  *
@@ -20,7 +22,7 @@ public final class EnvironmentSecretsPropertyEnvironmentPostProcessor extends Se
 
     @Override
     protected PropertyIndexSupplier getPropertyIndexSupplier(ConfigurableEnvironment environment) {
-        return new EnvironmentPropertyIndexSupplier(environment, ENV_VAR_SUFFIX);
+        return new EnvironmentPropertyIndexSupplier(Supplier::get, environment, ENV_VAR_SUFFIX);
     }
 
     @Override

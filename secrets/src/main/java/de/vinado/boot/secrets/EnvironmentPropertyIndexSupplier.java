@@ -1,7 +1,8 @@
 package de.vinado.boot.secrets;
 
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import org.apache.commons.logging.Log;
+import org.springframework.boot.logging.DeferredLogFactory;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.util.StringUtils;
 
@@ -19,19 +20,31 @@ import static de.vinado.boot.secrets.Utils.endsWith;
  * The value will be the the property name.
  * <p>
  * <em>SPRING_DATASOURCE_PASSWORD_FILE</em> → <em>spring.datasource.password</em>
+ * <p>
+ * The suffix should contain at least one character. Otherwise every environment property will be present in the index
+ * which might be a security risk.
  *
  * @author Vincent Nadoll
  */
-@RequiredArgsConstructor
 public class EnvironmentPropertyIndexSupplier implements PropertyIndexSupplier {
 
-    @NonNull
     private final ConfigurableEnvironment environment;
-    @NonNull
     private final String suffix;
 
-    public EnvironmentPropertyIndexSupplier(@NonNull ConfigurableEnvironment environment) {
-        this(environment, "");
+    public EnvironmentPropertyIndexSupplier(@NonNull DeferredLogFactory logFactory,
+                                            @NonNull ConfigurableEnvironment environment) {
+        this(logFactory, environment, "");
+    }
+
+    public EnvironmentPropertyIndexSupplier(@NonNull DeferredLogFactory logFactory,
+                                            @NonNull ConfigurableEnvironment environment,
+                                            @NonNull String suffix) {
+        this.environment = environment;
+        this.suffix = suffix;
+
+        Log log = logFactory.getLog(getClass());
+        Utils.<String>testAndLogFailure(StringUtils::hasText, log::warn, "Suffix doesn't contain any characters." +
+            "Thus all environment properties will be indexed which might be a security risk.").test(suffix);
     }
 
     @Override

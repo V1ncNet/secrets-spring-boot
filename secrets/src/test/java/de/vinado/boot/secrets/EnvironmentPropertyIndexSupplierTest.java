@@ -1,11 +1,13 @@
 package de.vinado.boot.secrets;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.logging.DeferredLogFactory;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.StandardEnvironment;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -21,12 +23,17 @@ class EnvironmentPropertyIndexSupplierTest {
 
     @Test
     void initializingNullArguments_shouldThrowException() {
+        DeferredLogFactory logFactory = Supplier::get;
         ConfigurableEnvironment environment = new StandardEnvironment();
 
-        assertThrows(NullPointerException.class, () -> new EnvironmentPropertyIndexSupplier(null));
-        assertThrows(NullPointerException.class, () -> new EnvironmentPropertyIndexSupplier(environment, null));
-        assertThrows(NullPointerException.class, () -> new EnvironmentPropertyIndexSupplier(null, "_FILE"));
+        assertThrows(NullPointerException.class, () -> new EnvironmentPropertyIndexSupplier(logFactory, null));
+        assertThrows(NullPointerException.class, () -> new EnvironmentPropertyIndexSupplier(null, environment));
         assertThrows(NullPointerException.class, () -> new EnvironmentPropertyIndexSupplier(null, null));
+
+        assertThrows(NullPointerException.class, () -> new EnvironmentPropertyIndexSupplier(logFactory, null, null));
+        assertThrows(NullPointerException.class, () -> new EnvironmentPropertyIndexSupplier(null, environment, null));
+        assertThrows(NullPointerException.class, () -> new EnvironmentPropertyIndexSupplier(null, null, "_FILE"));
+        assertThrows(NullPointerException.class, () -> new EnvironmentPropertyIndexSupplier(null, null, null));
     }
 
     @Test
@@ -38,7 +45,7 @@ class EnvironmentPropertyIndexSupplierTest {
         properties.put("PASSWORD_FILE_SECRET", "foo");
 
         ConfigurableEnvironment environment = spy(new StandardEnvironment());
-        EnvironmentPropertyIndexSupplier supplier = new EnvironmentPropertyIndexSupplier(environment);
+        EnvironmentPropertyIndexSupplier supplier = new EnvironmentPropertyIndexSupplier(Supplier::get, environment);
         when(environment.getSystemEnvironment()).thenReturn(properties);
         properties.forEach((key, value) -> when(environment.getProperty(key)).thenReturn(String.valueOf(value)));
 
@@ -69,7 +76,7 @@ class EnvironmentPropertyIndexSupplierTest {
         properties.put("PASSWORD_FILE_SECRET", "foo");
 
         ConfigurableEnvironment environment = spy(new StandardEnvironment());
-        EnvironmentPropertyIndexSupplier supplier = new EnvironmentPropertyIndexSupplier(environment, "_FILE");
+        EnvironmentPropertyIndexSupplier supplier = new EnvironmentPropertyIndexSupplier(Supplier::get, environment, "_FILE");
         when(environment.getSystemEnvironment()).thenReturn(properties);
         properties.forEach((key, value) -> when(environment.getProperty(key)).thenReturn(String.valueOf(value)));
 
