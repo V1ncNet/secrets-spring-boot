@@ -49,8 +49,8 @@ public class SecretsEnvironment {
         }
     }
 
-    private static Consumer<Object> doAndLog(Consumer<Object> consumer, Consumer<Object> level, String format,
-                                             Object... arguments) {
+    private static <T> Consumer<T> doAndLog(Consumer<T> consumer, Consumer<Object> level, String format,
+                                            Object... arguments) {
         return consumer.andThen(p -> level.accept(LogMessage.format(format, arguments)));
     }
 
