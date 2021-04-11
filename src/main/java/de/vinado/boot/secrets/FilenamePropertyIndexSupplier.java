@@ -50,7 +50,7 @@ public class FilenamePropertyIndexSupplier implements PropertyIndexSupplier {
     @Override
     public Map<String, String> get() {
         String baseDir = environment.getProperty(BASE_DIR_PROPERTY, DEFAULT_BASE_DIR_PROPERTY);
-        char separator = environment.getProperty(SEPARATOR_PROPERTY, Character.class, DEFAULT_SEPARATOR);
+        char separator = getSeparator();
         return Optional.of(baseDir)
             .map(Paths::get)
             .filter(Files::isDirectory)
@@ -58,6 +58,14 @@ public class FilenamePropertyIndexSupplier implements PropertyIndexSupplier {
             .orElse(Stream.empty())
             .filter(testAndLogFailure(this::isAllowed, log::warn, "Skipping ambiguous file %s, because of separator '%c'", Path::toAbsolutePath, path -> separator))
             .collect(Collectors.toMap(this::convertToPropertyName, this::toUri));
+    }
+
+    private Character getSeparator() {
+        return environment.getProperty(SEPARATOR_PROPERTY, Character.class, getDefaultSeparator());
+    }
+
+    protected Character getDefaultSeparator() {
+        return DEFAULT_SEPARATOR;
     }
 
     private Stream<Path> listFiles(Path path) {
@@ -85,26 +93,29 @@ public class FilenamePropertyIndexSupplier implements PropertyIndexSupplier {
         };
     }
 
-    private boolean isAllowed(Path filename) {
-        return isDefaultSeparator() || !containsDefaultSeparator(filename);
+    private boolean isAllowed(Path path) {
+        return isDefaultSeparator() || !containsDefaultSeparator(path);
     }
 
     private boolean isDefaultSeparator() {
-        return Objects.equals(environment.getProperty(SEPARATOR_PROPERTY, Character.class, DEFAULT_SEPARATOR), DEFAULT_SEPARATOR);
+        return Objects.equals(getSeparator(), DEFAULT_SEPARATOR);
     }
 
-    private boolean containsDefaultSeparator(Path filename) {
-        File file = filename.toFile();
-        String name = file.getName();
+    private boolean containsDefaultSeparator(Path path) {
+        String name = getFilename(path);
         return name.lastIndexOf(String.valueOf(DEFAULT_SEPARATOR)) > 0;
     }
 
-    private String convertToPropertyName(Path filename) {
-        char separator = environment.getProperty(SEPARATOR_PROPERTY, Character.class, DEFAULT_SEPARATOR);
-        File file = filename.toFile();
-        String name = file.getName();
+    private String convertToPropertyName(Path path) {
+        char separator = getSeparator();
+        String name = getFilename(path);
         String property = name.replace(separator, '.');
         return property.toLowerCase(Locale.US);
+    }
+
+    private String getFilename(Path path) {
+        File file = path.toFile();
+        return file.getName();
     }
 
     private String toUri(Path path) {
