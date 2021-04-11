@@ -1,5 +1,6 @@
 package de.vinado.boot.secrets;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -57,5 +58,12 @@ class EnvironmentPropertySubstituterTest {
         Optional<String> substitute = substituter.substitute(EMPTY_TEST_ENV_SUB);
 
         assertFalse(substitute.isPresent());
+    }
+
+    @AfterAll
+    static void afterAll() {
+        System.clearProperty(FOO_TEST_ENV_SUB);
+        System.clearProperty(BAR_TEST_ENV_SUB);
+        System.clearProperty(EMPTY_TEST_ENV_SUB);
     }
 }

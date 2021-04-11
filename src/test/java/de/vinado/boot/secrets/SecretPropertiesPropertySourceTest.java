@@ -1,5 +1,6 @@
 package de.vinado.boot.secrets;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.env.MutablePropertySources;
@@ -68,5 +69,10 @@ class SecretPropertiesPropertySourceTest {
         assertNotNull(propertySource);
         assertTrue(propertySource.containsProperty(key));
         assertEquals(value, propertySource.getProperty(key));
+    }
+
+    @AfterAll
+    static void afterAll() {
+        System.clearProperty("foo");
     }
 }

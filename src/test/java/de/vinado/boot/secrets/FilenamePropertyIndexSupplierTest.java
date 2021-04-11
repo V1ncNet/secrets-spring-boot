@@ -1,5 +1,6 @@
 package de.vinado.boot.secrets;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -80,5 +81,11 @@ class FilenamePropertyIndexSupplierTest {
         System.setProperty(FilenamePropertyIndexSupplier.SEPARATOR_PROPERTY, separator);
         ConfigurableEnvironment environment = new StandardEnvironment();
         this.supplier = new FilenamePropertyIndexSupplier(Supplier::get, environment);
+    }
+
+    @AfterAll
+    static void afterAll() {
+        System.clearProperty(FilenamePropertyIndexSupplier.BASE_DIR_PROPERTY);
+        System.clearProperty(FilenamePropertyIndexSupplier.SEPARATOR_PROPERTY);
     }
 }
