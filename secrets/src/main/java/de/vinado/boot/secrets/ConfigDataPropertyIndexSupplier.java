@@ -12,7 +12,6 @@ import org.springframework.core.env.PropertySourcesPropertyResolver;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static de.vinado.boot.secrets.Utils.startsWith;
