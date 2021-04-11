@@ -30,6 +30,8 @@ import java.util.stream.Stream;
 public class FilenamePropertyIndexSupplier implements PropertyIndexSupplier {
 
     public static final String BASE_DIR_PROPERTY = "secrets.file.base-dir";
+    public static final String SEPARATOR_PROPERTY = "secrets.file.separator";
+    public static final char DEFAULT_SEPARATOR = '.';
     private static final String DEFAULT_BASE_DIR_PROPERTY = "/run/secrets";
 
     private final Log log;
@@ -60,9 +62,11 @@ public class FilenamePropertyIndexSupplier implements PropertyIndexSupplier {
     }
 
     private String convertToPropertyName(Path filename) {
+        char separator = environment.getProperty(SEPARATOR_PROPERTY, Character.class, DEFAULT_SEPARATOR);
         File file = filename.toFile();
         String name = file.getName();
-        return name.toLowerCase(Locale.US);
+        String property = name.replace(separator, '.');
+        return property.toLowerCase(Locale.US);
     }
 
     private String toUri(Path path) {
