@@ -25,7 +25,8 @@ class FilenamePropertyIndexSupplierTest {
     }
 
     @Test
-    void filenames_shouldCreateIndex() {
+    void dotSeparator_shouldIndexAllFiles() {
+        System.setProperty(FilenamePropertyIndexSupplier.SEPARATOR_PROPERTY, ".");
         ConfigurableEnvironment environment = new StandardEnvironment();
         FilenamePropertyIndexSupplier supplier = new FilenamePropertyIndexSupplier(Supplier::get, environment);
 
@@ -51,6 +52,24 @@ class FilenamePropertyIndexSupplierTest {
 
         assertTrue(index.containsKey("application-env-sample.properties"));
         assertEquals(fromFile("application-env-sample.properties"), index.get("application-env-sample.properties"));
+    }
+
+    @Test
+    void underscoreSeparators_shouldIndexUnderscoreSeparatedFiles() {
+        System.setProperty(FilenamePropertyIndexSupplier.SEPARATOR_PROPERTY, "_");
+        ConfigurableEnvironment environment = new StandardEnvironment();
+        FilenamePropertyIndexSupplier supplier = new FilenamePropertyIndexSupplier(Supplier::get, environment);
+
+        Map<String, String> index = supplier.get();
+
+        assertNotNull(index);
+        assertEquals(2, index.size());
+
+        assertTrue(index.containsKey("spring.datasource.password"));
+        assertEquals(fromFile("spring_datasource_password"), index.get("spring.datasource.password"));
+
+        assertTrue(index.containsKey("spring.mail.host"));
+        assertEquals(fromFile("spring_mail_host"), index.get("spring.mail.host"));
     }
 
     private static String fromFile(String name) {
