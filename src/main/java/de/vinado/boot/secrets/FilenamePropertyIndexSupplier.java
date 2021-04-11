@@ -10,10 +10,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -46,12 +50,13 @@ public class FilenamePropertyIndexSupplier implements PropertyIndexSupplier {
     @Override
     public Map<String, String> get() {
         String baseDir = environment.getProperty(BASE_DIR_PROPERTY, DEFAULT_BASE_DIR_PROPERTY);
+        char separator = environment.getProperty(SEPARATOR_PROPERTY, Character.class, DEFAULT_SEPARATOR);
         return Optional.of(baseDir)
             .map(Paths::get)
             .filter(Files::isDirectory)
             .map(this::listFiles)
             .orElse(Stream.empty())
-            .filter(this::isAllowed)
+            .filter(testAndLogFailure(this::isAllowed, log::warn, "Skipping ambiguous file %s, because of separator '%c'", Path::toAbsolutePath, path -> separator))
             .collect(Collectors.toMap(this::convertToPropertyName, this::toUri, this::firstComeFirstServe));
     }
 
@@ -61,6 +66,23 @@ public class FilenamePropertyIndexSupplier implements PropertyIndexSupplier {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @SafeVarargs
+    private static <T> Predicate<T> testAndLogFailure(Predicate<T> predicate, Consumer<Object> level, String format,
+                                                      Function<T, Object>... argumentTransformers) {
+        return input -> {
+            if (predicate.test(input)) {
+                return true;
+            }
+
+            Object[] arguments = Arrays.stream(argumentTransformers)
+                .map(transformer -> transformer.apply(input))
+                .toArray(Object[]::new);
+            LogMessage message = LogMessage.format(format, arguments);
+            level.accept(message);
+            return false;
+        };
     }
 
     private boolean isAllowed(Path filename) {
