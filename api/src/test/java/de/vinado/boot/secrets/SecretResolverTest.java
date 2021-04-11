@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class SecretResolverTest {
 
     @Test
-    void noopResover_souldResolveUri() {
+    void noopResolver_shouldResolveUri() {
         SecretResolver resolver = Optional::of;
 
         URI location = URI.create("file:/run/secrets/foo");
