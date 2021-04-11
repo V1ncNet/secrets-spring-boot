@@ -46,7 +46,7 @@ public class SecretsEnvironment {
             String propertyName = entry.getKey();
             String location = entry.getValue();
             resolver.loadContent(location)
-                .ifPresent(doAndLog(add(propertyName), log::info, "Use secret value to set %s", propertyValue -> propertyName));
+                .ifPresent(doAndLog(add(propertyName), log::info, "Use secret value to set [%s]", propertyValue -> propertyName));
         }
     }
 
