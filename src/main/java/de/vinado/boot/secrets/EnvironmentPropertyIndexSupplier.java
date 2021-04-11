@@ -6,8 +6,9 @@ import org.springframework.core.env.ConfigurableEnvironment;
 
 import java.util.Map;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import static de.vinado.boot.secrets.Utils.endsWith;
 
 /**
  * A supplier for creating a property index over all environment properties ending with the configured suffix. The
@@ -39,10 +40,6 @@ public class EnvironmentPropertyIndexSupplier implements PropertyIndexSupplier {
         return environment.getSystemEnvironment().keySet().stream()
             .filter(endsWith(suffix))
             .collect(Collectors.toMap(this::convertToPropertyName, Function.identity()));
-    }
-
-    private static Predicate<String> endsWith(String suffix) {
-        return key -> key.endsWith(suffix);
     }
 
     private String convertToPropertyName(String propertyName) {

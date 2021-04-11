@@ -3,23 +3,20 @@ package de.vinado.boot.secrets;
 import org.apache.commons.logging.Log;
 import org.springframework.boot.logging.DeferredLogFactory;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.log.LogMessage;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static de.vinado.boot.secrets.Utils.testAndLogFailure;
 
 /**
  * A supplier for creating a property index over filenames in a configurable directory. The property name is based on
@@ -74,23 +71,6 @@ public class FilenamePropertyIndexSupplier implements PropertyIndexSupplier {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @SafeVarargs
-    private static <T> Predicate<T> testAndLogFailure(Predicate<T> predicate, Consumer<Object> level, String format,
-                                                      Function<T, Object>... argumentTransformers) {
-        return input -> {
-            if (predicate.test(input)) {
-                return true;
-            }
-
-            Object[] arguments = Arrays.stream(argumentTransformers)
-                .map(transformer -> transformer.apply(input))
-                .toArray(Object[]::new);
-            LogMessage message = LogMessage.format(format, arguments);
-            level.accept(message);
-            return false;
-        };
     }
 
     private boolean isAllowed(Path path) {
