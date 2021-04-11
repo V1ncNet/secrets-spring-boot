@@ -23,13 +23,7 @@ import java.util.function.Function;
 public class DefaultSecretResolver implements SecretResolver {
 
     @NonNull
-    private final Substituter substituter;
-    @NonNull
     private final ResourceLoader resourceLoader;
-
-    public DefaultSecretResolver(ResourceLoader resourceLoader) {
-        this(Substituter.noop(), resourceLoader);
-    }
 
     /**
      * Substitutes the given location and loads its secret afterwards.
@@ -39,7 +33,6 @@ public class DefaultSecretResolver implements SecretResolver {
      */
     public Optional<String> loadContent(String location) {
         return Optional.ofNullable(location)
-            .flatMap(substituter::substitute)
             .flatMap(resolveWith(resourceLoader))
             .map(this::readContent)
             .filter(StringUtils::hasText)

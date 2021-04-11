@@ -17,8 +17,10 @@ import org.springframework.core.io.ResourceLoader;
 public abstract class SecretsEnvironmentPostProcessor implements EnvironmentPostProcessor {
 
     private final Log log;
+    private final DeferredLogFactory logFactory;
 
     public SecretsEnvironmentPostProcessor(DeferredLogFactory logFactory) {
+        this.logFactory = logFactory;
         this.log = logFactory.getLog(getClass());
     }
 
@@ -40,6 +42,15 @@ public abstract class SecretsEnvironmentPostProcessor implements EnvironmentPost
      * @param resourceLoader the resource loader to be used
      * @return new instance of {@link SecretsEnvironment}
      */
-    protected abstract SecretsEnvironment createSecretsEnvironment(ConfigurableEnvironment environment,
-                                                                   ResourceLoader resourceLoader);
+    protected SecretsEnvironment createSecretsEnvironment(ConfigurableEnvironment environment, ResourceLoader resourceLoader) {
+        SecretResolver secretResolver = getSecretResolver(resourceLoader);
+        PropertyIndexSupplier indexSupplier = getPropertyIndexSupplier(environment);
+        return new SecretsEnvironment(logFactory, environment, secretResolver, indexSupplier);
+    }
+
+    protected SecretResolver getSecretResolver(ResourceLoader resourceLoader) {
+        return new DefaultSecretResolver(resourceLoader);
+    }
+
+    protected abstract PropertyIndexSupplier getPropertyIndexSupplier(ConfigurableEnvironment environment);
 }

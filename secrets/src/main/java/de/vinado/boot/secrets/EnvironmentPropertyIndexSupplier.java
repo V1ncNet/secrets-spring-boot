@@ -3,9 +3,9 @@ package de.vinado.boot.secrets;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.util.StringUtils;
 
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static de.vinado.boot.secrets.Utils.endsWith;
@@ -16,12 +16,11 @@ import static de.vinado.boot.secrets.Utils.endsWith;
  * 1. Trimming of suffix
  * 2. Replacement of underscores with periods
  * 3. Conversion to lowercase
- * The value will be the the property name and has to be substituted.
+ * The value will be the the property name.
  * <p>
  * <em>SPRING_DATASOURCE_PASSWORD_FILE</em> → <em>spring.datasource.password</em>
  *
  * @author Vincent Nadoll
- * @see EnvironmentPropertySubstituter
  */
 @RequiredArgsConstructor
 public class EnvironmentPropertyIndexSupplier implements PropertyIndexSupplier {
@@ -39,7 +38,8 @@ public class EnvironmentPropertyIndexSupplier implements PropertyIndexSupplier {
     public Map<String, String> get() {
         return environment.getSystemEnvironment().keySet().stream()
             .filter(endsWith(suffix))
-            .collect(Collectors.toMap(this::convertToPropertyName, Function.identity()));
+            .filter(entry -> StringUtils.hasText(environment.getProperty(entry)))
+            .collect(Collectors.toMap(this::convertToPropertyName, substitute(environment)));
     }
 
     private String convertToPropertyName(String propertyName) {

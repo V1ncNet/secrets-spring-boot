@@ -40,6 +40,7 @@ class EnvironmentPropertyIndexSupplierTest {
         ConfigurableEnvironment environment = spy(new StandardEnvironment());
         EnvironmentPropertyIndexSupplier supplier = new EnvironmentPropertyIndexSupplier(environment);
         when(environment.getSystemEnvironment()).thenReturn(properties);
+        properties.forEach((key, value) -> when(environment.getProperty(key)).thenReturn(String.valueOf(value)));
 
         Map<String, String> index = supplier.get();
 
@@ -47,16 +48,16 @@ class EnvironmentPropertyIndexSupplierTest {
         assertEquals(4, index.size());
 
         assertTrue(index.containsKey("spring.datasource.username.file"));
-        assertEquals("SPRING_DATASOURCE_USERNAME_FILE", index.get("spring.datasource.username.file"));
+        assertEquals("classpath:spring.datasource.username", index.get("spring.datasource.username.file"));
 
         assertTrue(index.containsKey("spring.datasource.password.file"));
-        assertEquals("SPRING_DATASOURCE_PASSWORD_FILE", index.get("spring.datasource.password.file"));
+        assertEquals("classpath:spring_datasource_password", index.get("spring.datasource.password.file"));
 
         assertTrue(index.containsKey("home"));
-        assertEquals("HOME", index.get("home"));
+        assertEquals("/home/bob", index.get("home"));
 
         assertTrue(index.containsKey("password.file.secret"));
-        assertEquals("PASSWORD_FILE_SECRET", index.get("password.file.secret"));
+        assertEquals("foo", index.get("password.file.secret"));
     }
 
     @Test
@@ -70,6 +71,7 @@ class EnvironmentPropertyIndexSupplierTest {
         ConfigurableEnvironment environment = spy(new StandardEnvironment());
         EnvironmentPropertyIndexSupplier supplier = new EnvironmentPropertyIndexSupplier(environment, "_FILE");
         when(environment.getSystemEnvironment()).thenReturn(properties);
+        properties.forEach((key, value) -> when(environment.getProperty(key)).thenReturn(String.valueOf(value)));
 
         Map<String, String> index = supplier.get();
 
@@ -77,9 +79,9 @@ class EnvironmentPropertyIndexSupplierTest {
         assertEquals(2, index.size());
 
         assertTrue(index.containsKey("spring.datasource.username"));
-        assertEquals("SPRING_DATASOURCE_USERNAME_FILE", index.get("spring.datasource.username"));
+        assertEquals("classpath:spring.datasource.username", index.get("spring.datasource.username"));
 
         assertTrue(index.containsKey("spring.datasource.password"));
-        assertEquals("SPRING_DATASOURCE_PASSWORD_FILE", index.get("spring.datasource.password"));
+        assertEquals("classpath:spring_datasource_password", index.get("spring.datasource.password"));
     }
 }

@@ -31,9 +31,7 @@ class DefaultSecretResolverTest {
 
     @Test
     void initializingNullArguments_shouldThrowException() {
-        assertThrows(NullPointerException.class, () -> new DefaultSecretResolver(Substituter.noop(), null));
-        assertThrows(NullPointerException.class, () -> new DefaultSecretResolver(null, resourceLoader));
-        assertThrows(NullPointerException.class, () -> new DefaultSecretResolver(null, null));
+        assertThrows(NullPointerException.class, () -> new DefaultSecretResolver(null));
     }
 
     @Test

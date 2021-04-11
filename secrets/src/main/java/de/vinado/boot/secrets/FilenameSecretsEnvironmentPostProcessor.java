@@ -4,7 +4,6 @@ import org.springframework.boot.context.config.ConfigDataEnvironmentPostProcesso
 import org.springframework.boot.logging.DeferredLogFactory;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.io.ResourceLoader;
 
 /**
  * An environment post-processor that resolves all files from a configurable directory.
@@ -23,11 +22,8 @@ public final class FilenameSecretsEnvironmentPostProcessor extends SecretsEnviro
     }
 
     @Override
-    protected SecretsEnvironment createSecretsEnvironment(ConfigurableEnvironment environment,
-                                                          ResourceLoader resourceLoader) {
-        DefaultSecretResolver resolver = new DefaultSecretResolver(Substituter.noop(), resourceLoader);
-        FilenamePropertyIndexSupplier propertyIndexSupplier = new FilenamePropertyIndexSupplier(logFactory, environment);
-        return new SecretsEnvironment(logFactory, environment, resolver, propertyIndexSupplier);
+    protected PropertyIndexSupplier getPropertyIndexSupplier(ConfigurableEnvironment environment) {
+        return new FilenamePropertyIndexSupplier(logFactory, environment);
     }
 
     @Override

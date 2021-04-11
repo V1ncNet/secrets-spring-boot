@@ -3,7 +3,6 @@ package de.vinado.boot.secrets;
 import org.springframework.boot.logging.DeferredLogFactory;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.io.ResourceLoader;
 
 /**
  * An environment post-processor that resolves <em>secrets.file.properties</em> from the application.properties
@@ -24,12 +23,8 @@ public final class FilenameConfigDataSecretsEnvironmentPostProcessor extends Sec
     }
 
     @Override
-    protected SecretsEnvironment createSecretsEnvironment(ConfigurableEnvironment environment,
-                                                          ResourceLoader resourceLoader) {
-        ConfigDataPropertyIndexSupplier indexSupplier =
-            new ConfigDataPropertyIndexSupplier(logFactory, environment, CONFIG_DATA_INFIX);
-        DefaultSecretResolver secretResolver = new DefaultSecretResolver(resourceLoader);
-        return new SecretsEnvironment(logFactory, environment, secretResolver, indexSupplier);
+    protected PropertyIndexSupplier getPropertyIndexSupplier(ConfigurableEnvironment environment) {
+        return new ConfigDataPropertyIndexSupplier(logFactory, environment, CONFIG_DATA_INFIX);
     }
 
     @Override

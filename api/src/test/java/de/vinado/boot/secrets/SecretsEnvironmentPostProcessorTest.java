@@ -8,7 +8,6 @@ import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.ResourceLoader;
 
 import java.util.Collections;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -29,9 +28,13 @@ class SecretsEnvironmentPostProcessorTest {
 
         SecretsEnvironmentPostProcessor processor = new SecretsEnvironmentPostProcessor(logFactory) {
             @Override
-            protected SecretsEnvironment createSecretsEnvironment(ConfigurableEnvironment environment, ResourceLoader resourceLoader) {
-                Map<String, String> index = Collections.singletonMap("spring.datasource.username", "bob");
-                return new SecretsEnvironment(logFactory, environment, Optional::of, () -> index);
+            protected SecretResolver getSecretResolver(ResourceLoader resourceLoader) {
+                return Optional::of;
+            }
+
+            @Override
+            protected PropertyIndexSupplier getPropertyIndexSupplier(ConfigurableEnvironment environment) {
+                return () -> Collections.singletonMap("spring.datasource.username", "bob");
             }
         };
 
