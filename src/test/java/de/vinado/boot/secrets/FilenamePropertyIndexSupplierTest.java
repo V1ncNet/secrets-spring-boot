@@ -19,6 +19,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class FilenamePropertyIndexSupplierTest {
 
+    private FilenamePropertyIndexSupplier supplier;
+
     @BeforeAll
     static void beforeAll() {
         System.setProperty(FilenamePropertyIndexSupplier.BASE_DIR_PROPERTY, "${user.dir}/src/test/resources");
@@ -26,9 +28,7 @@ class FilenamePropertyIndexSupplierTest {
 
     @Test
     void dotSeparator_shouldIndexAllFiles() {
-        System.setProperty(FilenamePropertyIndexSupplier.SEPARATOR_PROPERTY, ".");
-        ConfigurableEnvironment environment = new StandardEnvironment();
-        FilenamePropertyIndexSupplier supplier = new FilenamePropertyIndexSupplier(Supplier::get, environment);
+        setUpSupplier(".");
 
         Map<String, String> index = supplier.get();
 
@@ -56,9 +56,7 @@ class FilenamePropertyIndexSupplierTest {
 
     @Test
     void underscoreSeparators_shouldIndexUnderscoreSeparatedFiles() {
-        System.setProperty(FilenamePropertyIndexSupplier.SEPARATOR_PROPERTY, "_");
-        ConfigurableEnvironment environment = new StandardEnvironment();
-        FilenamePropertyIndexSupplier supplier = new FilenamePropertyIndexSupplier(Supplier::get, environment);
+        setUpSupplier("_");
 
         Map<String, String> index = supplier.get();
 
@@ -76,5 +74,11 @@ class FilenamePropertyIndexSupplierTest {
         String pathname = String.format("%s/src/test/resources/%s", System.getProperty("user.dir"), name);
         Path path = Paths.get(pathname);
         return path.toUri().toString();
+    }
+
+    private void setUpSupplier(String separator) {
+        System.setProperty(FilenamePropertyIndexSupplier.SEPARATOR_PROPERTY, separator);
+        ConfigurableEnvironment environment = new StandardEnvironment();
+        this.supplier = new FilenamePropertyIndexSupplier(Supplier::get, environment);
     }
 }
