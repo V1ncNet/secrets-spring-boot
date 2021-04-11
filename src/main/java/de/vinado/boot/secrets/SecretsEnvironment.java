@@ -46,11 +46,11 @@ public class SecretsEnvironment {
             String propertyName = entry.getKey();
             String location = entry.getValue();
             resolver.loadContent(location)
-                .ifPresent(doAndLog(add(propertyName), log::info, "Use secret value to set [%s]", propertyValue -> propertyName));
+                .ifPresent(doAndLog(putTo(propertyName), log::info, "Use secret value to set [%s]", propertyValue -> propertyName));
         }
     }
 
-    private Consumer<Object> add(String systemProperty) {
+    private Consumer<Object> putTo(String systemProperty) {
         return secretValue -> source.put(systemProperty, secretValue);
     }
 }
