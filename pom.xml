@@ -5,10 +5,16 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>de.vinado.boot</groupId>
-    <artifactId>spring-boot-secrets</artifactId>
+    <artifactId>spring-boot-secrets-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
-    <name>spring-boot-secrets</name>
+    <modules>
+        <module>api</module>
+        <module>secrets</module>
+    </modules>
+
+    <name>spring-boot-secrets-parent</name>
     <url>https://github.com/V1ncNet/spring-boot-secrets.git</url>
 
     <licenses>
@@ -48,7 +54,6 @@
         <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
     </properties>
 
-
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -58,32 +63,19 @@
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
+
+            <dependency>
+                <groupId>de.vinado.boot</groupId>
+                <artifactId>spring-boot-secrets-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.vinado.spring</groupId>
+                <artifactId>spring-boot-secrets</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-junit-jupiter</artifactId>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
 
     <build>
         <plugins>
