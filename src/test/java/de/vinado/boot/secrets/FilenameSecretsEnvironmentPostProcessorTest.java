@@ -1,5 +1,6 @@
 package de.vinado.boot.secrets;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -88,5 +89,11 @@ class FilenameSecretsEnvironmentPostProcessorTest {
         processor.postProcessEnvironment(environment, application);
 
         assertNull(environment.getProperty("secret.empty"));
+    }
+
+    @AfterAll
+    static void afterAll() {
+        System.clearProperty(FilenamePropertyIndexSupplier.BASE_DIR_PROPERTY);
+        System.clearProperty(FilenamePropertyIndexSupplier.SEPARATOR_PROPERTY);
     }
 }
