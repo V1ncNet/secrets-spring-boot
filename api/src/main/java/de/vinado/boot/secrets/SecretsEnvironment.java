@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import static de.vinado.boot.secrets.Utils.doAndLog;
+import static de.vinado.boot.secrets.Utils.acceptAndLog;
 
 /**
  * A wrapper around {@link ConfigurableEnvironment} which loads secrets and applies them to
@@ -46,7 +46,7 @@ public class SecretsEnvironment {
             String propertyName = entry.getKey();
             String location = entry.getValue();
             resolver.loadContent(location)
-                .ifPresent(doAndLog(putTo(propertyName), log::info, "Use secret value to set [%s]", propertyValue -> propertyName));
+                .ifPresent(acceptAndLog(putTo(propertyName), log::info, "Use secret value to set [%s]", propertyValue -> propertyName));
         }
     }
 

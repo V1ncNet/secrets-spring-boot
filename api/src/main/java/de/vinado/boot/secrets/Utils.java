@@ -18,9 +18,9 @@ final class Utils {
     }
 
     @SafeVarargs
-    public static <T> Consumer<T> doAndLog(Consumer<T> consumer, Consumer<Object> level, String format,
-                                           Function<T, ?>... argumentTransformers) {
-        return consumer.andThen(input -> doLog(input, level, format, argumentTransformers));
+    public static <T> Consumer<T> acceptAndLog(Consumer<T> consumer, Consumer<Object> level, String format,
+                                               Function<T, ?>... argumentTransformers) {
+        return consumer.andThen(input -> log(input, level, format, argumentTransformers));
     }
 
     @SafeVarargs
@@ -31,14 +31,14 @@ final class Utils {
                 return true;
             }
 
-            doLog(input, level, format, argumentTransformers);
+            log(input, level, format, argumentTransformers);
             return false;
         };
     }
 
     @SafeVarargs
-    public static <T> void doLog(T input, Consumer<Object> level, String format,
-                                 Function<T, ?>... argumentTransformers) {
+    public static <T> void log(T input, Consumer<Object> level, String format,
+                               Function<T, ?>... argumentTransformers) {
         Object[] arguments = Arrays.stream(argumentTransformers)
             .map(transformer -> transformer.apply(input))
             .filter(not(Throwable.class::isInstance))

@@ -34,9 +34,9 @@ class UtilsTest {
     }
 
     @Test
-    void doAndLog_shouldLog() {
+    void acceptAndLog() {
         List<Integer> list = new ArrayList<>();
-        Utils.<Integer>doAndLog(list::add, log::info, "Added value: %d", Function.identity()).accept(0);
+        Utils.<Integer>acceptAndLog(list::add, log::info, "Added value: %d", Function.identity()).accept(0);
 
         assertEquals(1, list.size());
         assertEquals(0, list.get(0));
@@ -59,10 +59,10 @@ class UtilsTest {
     }
 
     @Test
-    void doLog_shouldLog() {
+    void log() {
         Integer a = 2;
         Integer b = 2;
-        Utils.doLog(a, log::info, "%d + %d = %d", Function.identity(), integer -> b, integer -> integer + b);
+        Utils.log(a, log::info, "%d + %d = %d", Function.identity(), integer -> b, integer -> integer + b);
 
         verify(log, times(1)).info(any(LogMessage.class));
     }
