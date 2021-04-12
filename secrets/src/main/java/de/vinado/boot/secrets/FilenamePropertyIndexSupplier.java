@@ -61,12 +61,8 @@ public class FilenamePropertyIndexSupplier implements PropertyIndexSupplier {
     }
 
     private Separator getSeparator() {
-        char property = environment.getProperty(SEPARATOR_PROPERTY, Character.class, getDefaultSeparator().getCharacter());
+        char property = environment.getProperty(SEPARATOR_PROPERTY, Character.class, DEFAULT_SEPARATOR.getCharacter());
         return Separator.of(property);
-    }
-
-    protected Separator getDefaultSeparator() {
-        return DEFAULT_SEPARATOR;
     }
 
     private Stream<Path> listFiles(Path path) {
