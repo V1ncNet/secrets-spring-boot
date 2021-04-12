@@ -13,6 +13,7 @@ import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -69,6 +70,13 @@ class FilenamePropertyIndexSupplierTest {
 
         assertTrue(index.containsKey("spring.mail.host"));
         assertEquals(fromFile("spring_mail_host"), index.get("spring.mail.host"));
+    }
+
+    @Test
+    void illegalSeparator_shouldThrowException() {
+        setUpSupplier("/");
+
+        assertThrows(IllegalArgumentException.class, () -> supplier.get());
     }
 
     private static String fromFile(String name) {

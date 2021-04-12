@@ -1,5 +1,7 @@
 package de.vinado.boot.secrets;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.logging.Log;
 import org.springframework.boot.logging.DeferredLogFactory;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -9,6 +11,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -33,7 +36,7 @@ public class FilenamePropertyIndexSupplier implements PropertyIndexSupplier {
 
     public static final String BASE_DIR_PROPERTY = "secrets.file.base-dir";
     public static final String SEPARATOR_PROPERTY = "secrets.file.separator";
-    public static final char DEFAULT_SEPARATOR = '.';
+    public static final Separator DEFAULT_SEPARATOR = Separator.DOT;
     private static final String DEFAULT_BASE_DIR_PROPERTY = "/run/secrets";
 
     private final Log log;
@@ -47,21 +50,22 @@ public class FilenamePropertyIndexSupplier implements PropertyIndexSupplier {
     @Override
     public Map<String, String> get() {
         String baseDir = environment.getProperty(BASE_DIR_PROPERTY, DEFAULT_BASE_DIR_PROPERTY);
-        char separator = getSeparator();
+        Separator separator = getSeparator();
         return Optional.of(baseDir)
             .map(Paths::get)
             .filter(Files::isDirectory)
             .map(this::listFiles)
             .orElse(Stream.empty())
-            .filter(testAndLogFailure(this::isAllowed, log::warn, "Skipping ambiguous file %s, because of separator '%c'", Path::toAbsolutePath, path -> separator))
+            .filter(testAndLogFailure(this::isAllowed, log::warn, "Skipping ambiguous file %s, because of separator '%s'", Path::toAbsolutePath, path -> separator))
             .collect(Collectors.toMap(this::convertToPropertyName, this::toUri));
     }
 
-    private Character getSeparator() {
-        return environment.getProperty(SEPARATOR_PROPERTY, Character.class, getDefaultSeparator());
+    private Separator getSeparator() {
+        char property = environment.getProperty(SEPARATOR_PROPERTY, Character.class, getDefaultSeparator().getCharacter());
+        return Separator.of(property);
     }
 
-    protected Character getDefaultSeparator() {
+    protected Separator getDefaultSeparator() {
         return DEFAULT_SEPARATOR;
     }
 
@@ -83,13 +87,13 @@ public class FilenamePropertyIndexSupplier implements PropertyIndexSupplier {
 
     private boolean containsDefaultSeparator(Path path) {
         String name = getFilename(path);
-        return name.lastIndexOf(String.valueOf(DEFAULT_SEPARATOR)) > 0;
+        return name.lastIndexOf(DEFAULT_SEPARATOR.toString()) > 0;
     }
 
     private String convertToPropertyName(Path path) {
-        char separator = getSeparator();
+        Separator separator = getSeparator();
         String name = getFilename(path);
-        String property = name.replace(separator, '.');
+        String property = name.replace(separator.getCharacter(), '.');
         return property.toLowerCase(Locale.US);
     }
 
@@ -100,5 +104,27 @@ public class FilenamePropertyIndexSupplier implements PropertyIndexSupplier {
 
     private String toUri(Path path) {
         return path.toUri().toString();
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    public enum Separator {
+        DOT('.'),
+        UNDERSCORE('_'),
+        ;
+
+        private final char character;
+
+        public static Separator of(char separator) {
+            return Arrays.stream(values())
+                .filter(value -> value.character == separator)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Unknown separator char"));
+        }
+
+        @Override
+        public String toString() {
+            return String.valueOf(character);
+        }
     }
 }
