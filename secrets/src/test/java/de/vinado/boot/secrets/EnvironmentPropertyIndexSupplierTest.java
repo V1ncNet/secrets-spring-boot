@@ -10,7 +10,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import static de.vinado.boot.secrets.TestUtils.fileUriFromClasspath;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -45,37 +47,64 @@ class EnvironmentPropertyIndexSupplierTest {
     }
 
     @Test
-    void environmentProperties_shouldCreateIndex() {
+    void suffixedEnvironmentProperty_shouldBeIndexed() {
         addProperty("SPRING_DATASOURCE_USERNAME_FILE", "classpath:spring.datasource.username");
-        addProperty("SPRING_DATASOURCE_PASSWORD_FILE", "classpath:spring_datasource_password");
-        addProperty("HOME", "/home/bob");
-        addProperty("PASSWORD_FILE_SECRET", "foo");
-
-        createIndex("");
-
-        assertNotNull(index);
-        assertTrue(index.size() >= 4);
-
-        assertEntry("spring.datasource.username.file", "classpath:spring.datasource.username");
-        assertEntry("spring.datasource.password.file", "classpath:spring_datasource_password");
-        assertEntry("home", "/home/bob");
-        assertEntry("password.file.secret", "foo");
-    }
-
-    @Test
-    void fileSuffixEnvironmentProperties_shouldCreateIndex() {
-        addProperty("SPRING_DATASOURCE_USERNAME_FILE", "classpath:spring.datasource.username");
-        addProperty("SPRING_DATASOURCE_PASSWORD_FILE", "classpath:spring_datasource_password");
-        addProperty("HOME", "/home/bob");
-        addProperty("PASSWORD_FILE_SECRET", "foo");
 
         createIndex("_FILE");
 
-        assertNotNull(index);
-        assertEquals(2, index.size());
-
         assertEntry("spring.datasource.username", "classpath:spring.datasource.username");
-        assertEntry("spring.datasource.password", "classpath:spring_datasource_password");
+    }
+
+    @Test
+    void notSuffixedEnvironmentProperty_shouldNotBeIndexed_whenSuffixIsConfigured() {
+        addProperty("SPRING_DATASOURCE_PASSWORD", fileUriFromClasspath("spring_datasource_password"));
+
+        createIndex("_FILE");
+
+        assertFalse(index.containsKey("spring.datasource.filename"));
+    }
+
+    @Test
+    void suffixedEnvironmentProperty_shouldBeIndexed_whenSuffixIsNotConfigured() {
+        addProperty("SPRING_MAIL_HOST_FILE", "classpath:spring_mail_host");
+
+        createIndex("");
+
+        assertEntry("spring.mail.host.file", "classpath:spring_mail_host");
+    }
+
+    @Test
+    void nullProperty_shouldNotBeIndexed() {
+        addProperty("NULL_VARIABLE_FILE", null);
+
+        createIndex("_FILE");
+
+        assertFalse(index.containsKey("null.variable"));
+    }
+
+    @Test
+    void emptyProperty_shouldNotBeIndexed() {
+        addProperty("EMPTY_SECRET_FILE", "");
+
+        createIndex("_FILE");
+
+        assertFalse(index.containsKey("empty.secret"));
+    }
+
+    @Test
+    void configuredSuffix_shouldIndexNothing() {
+        createIndex("_FILE");
+
+        assertNotNull(index);
+        assertEquals(0, index.size());
+    }
+
+    @Test
+    void emptySuffix_shouldIndexEverything() {
+        createIndex("");
+
+        assertNotNull(index);
+        assertTrue(index.size() > 0);
     }
 
     private void addProperty(String key, String value) {
