@@ -1,15 +1,14 @@
 package de.vinado.boot.secrets;
 
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * @author Vincent Nadoll
@@ -26,52 +25,38 @@ class FilenameSecretsEnvironmentPostProcessorTest extends AbstractSecretsEnviron
         System.setProperty(FilenamePropertyIndexSupplier.BASE_DIR_PROPERTY, "${user.dir}/src/test/resources");
     }
 
-    @Override
-    void beforeSetUp() {
+    @Test
+    void resourceDirectory_shouldBeProcessed_withDotSeparator() {
         System.setProperty(FilenamePropertyIndexSupplier.SEPARATOR_PROPERTY, ".");
-    }
 
-    @Test
-    void dotSeparatedResource_shouldBeProcessed() {
         postProcessEnvironment();
 
-        assertFileExist("spring.datasource.username");
-        assertFileNotExist("spring_datasource_username");
-        assertEquals("alice", environment.getProperty("spring.datasource.username"));
+        assertNotNull(environment.getProperty("application-env-sample.properties"));
+        assertNotNull(environment.getProperty("application-file-sample.properties"));
+        assertNull(environment.getProperty("secret.empty"));
+        assertProperty("1234password", "spring.datasource.password");
+        assertProperty("password1234", "spring_datasource_password");
+        assertProperty("alice", "spring.datasource.username");
+        assertNull(environment.getProperty("spring.mail.host"));
+        assertProperty("localhost", "spring_mail_host");
     }
 
     @Test
-    void processor_shouldPriorDotSeparatedSecretAndSetPasswordProperty() {
-        postProcessEnvironment();
-
-        assertFileExist("spring.datasource.password");
-        assertFileExist("spring_datasource_password");
-        assertEquals("1234password", environment.getProperty("spring.datasource.password"));
-    }
-
-    private void assertFileExist(String name) {
-        assertFilePresence(name, Assertions::assertTrue);
-    }
-
-    @Test
-    void underscoreSeparatedSecretFile_shouldSetSmtpHost() {
+    void resourceDirectory_shouldBeProcessed_withUnderscoreSeparator() {
         System.setProperty(FilenamePropertyIndexSupplier.SEPARATOR_PROPERTY, "_");
 
         postProcessEnvironment();
 
-        assertFileNotExist("spring.mail.host");
-        assertFileExist("spring_mail_host");
-        assertEquals("localhost", environment.getProperty("spring.mail.host"));
+        assertNull(environment.getProperty("application-env-sample.properties"));
+        assertNull(environment.getProperty("application-file-sample.properties"));
+        assertNull(environment.getProperty("secret.empty"));
+        assertProperty("password1234", "spring.datasource.password");
+        assertNull(environment.getProperty("spring.datasource.username"));
+        assertProperty("localhost", "spring.mail.host");
     }
 
-    private void assertFileNotExist(String name) {
-        assertFilePresence(name, Assertions::assertFalse);
-    }
-
-    private void assertFilePresence(String name, Consumer<Boolean> exist) {
-        String pathname = String.format("%s/src/test/resources/%s", System.getProperty("user.dir"), name);
-        File file = new File(pathname);
-        exist.accept(file.exists());
+    private void assertProperty(String value, String property) {
+        assertEquals(value, environment.getProperty(property));
     }
 
     @AfterAll
