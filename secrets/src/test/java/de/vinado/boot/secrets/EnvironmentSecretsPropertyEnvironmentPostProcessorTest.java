@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.UUID;
 import java.util.function.Supplier;
 
+import static de.vinado.boot.secrets.TestUtils.fileUriFromClasspath;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
@@ -49,7 +50,7 @@ class EnvironmentSecretsPropertyEnvironmentPostProcessorTest {
 
     @Test
     void fileUri_shouldSetPasswordProperty() {
-        setProperty("SPRING_DATASOURCE_PASSWORD_FILE", String.format("file:%s/src/test/resources/spring_datasource_password", System.getProperty("user.dir")));
+        setProperty("SPRING_DATASOURCE_PASSWORD_FILE", fileUriFromClasspath("spring_datasource_password"));
 
         processor.postProcessEnvironment(environment, application);
 

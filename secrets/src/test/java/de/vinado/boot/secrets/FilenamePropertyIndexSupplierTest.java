@@ -6,11 +6,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.StandardEnvironment;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import static de.vinado.boot.secrets.TestUtils.fileUriFromClasspath;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -38,22 +37,22 @@ class FilenamePropertyIndexSupplierTest {
         assertEquals(7, index.size());
 
         assertTrue(index.containsKey("secret.empty"));
-        assertEquals(fromFile("secret.empty"), index.get("secret.empty"));
+        assertEquals(fileUriFromClasspath("secret.empty"), index.get("secret.empty"));
 
         assertTrue(index.containsKey("spring.datasource.password"));
-        assertEquals(fromFile("spring.datasource.password"), index.get("spring.datasource.password"));
+        assertEquals(fileUriFromClasspath("spring.datasource.password"), index.get("spring.datasource.password"));
 
         assertTrue(index.containsKey("spring.datasource.username"));
-        assertEquals(fromFile("spring.datasource.username"), index.get("spring.datasource.username"));
+        assertEquals(fileUriFromClasspath("spring.datasource.username"), index.get("spring.datasource.username"));
 
         assertTrue(index.containsKey("spring_mail_host"));
-        assertEquals(fromFile("spring_mail_host"), index.get("spring_mail_host"));
+        assertEquals(fileUriFromClasspath("spring_mail_host"), index.get("spring_mail_host"));
 
         assertTrue(index.containsKey("application-file-sample.properties"));
-        assertEquals(fromFile("application-file-sample.properties"), index.get("application-file-sample.properties"));
+        assertEquals(fileUriFromClasspath("application-file-sample.properties"), index.get("application-file-sample.properties"));
 
         assertTrue(index.containsKey("application-env-sample.properties"));
-        assertEquals(fromFile("application-env-sample.properties"), index.get("application-env-sample.properties"));
+        assertEquals(fileUriFromClasspath("application-env-sample.properties"), index.get("application-env-sample.properties"));
     }
 
     @Test
@@ -66,10 +65,10 @@ class FilenamePropertyIndexSupplierTest {
         assertEquals(2, index.size());
 
         assertTrue(index.containsKey("spring.datasource.password"));
-        assertEquals(fromFile("spring_datasource_password"), index.get("spring.datasource.password"));
+        assertEquals(fileUriFromClasspath("spring_datasource_password"), index.get("spring.datasource.password"));
 
         assertTrue(index.containsKey("spring.mail.host"));
-        assertEquals(fromFile("spring_mail_host"), index.get("spring.mail.host"));
+        assertEquals(fileUriFromClasspath("spring_mail_host"), index.get("spring.mail.host"));
     }
 
     @Test
@@ -77,12 +76,6 @@ class FilenamePropertyIndexSupplierTest {
         setUpSupplier("/");
 
         assertThrows(IllegalArgumentException.class, () -> supplier.get());
-    }
-
-    private static String fromFile(String name) {
-        String pathname = String.format("%s/src/test/resources/%s", System.getProperty("user.dir"), name);
-        Path path = Paths.get(pathname);
-        return path.toUri().toString();
     }
 
     private void setUpSupplier(String separator) {
