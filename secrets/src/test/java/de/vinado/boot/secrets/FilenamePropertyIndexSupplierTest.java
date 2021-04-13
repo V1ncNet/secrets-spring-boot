@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class FilenamePropertyIndexSupplierTest {
 
-    private FilenamePropertyIndexSupplier supplier;
+    private Map<String, String> index;
 
     @BeforeAll
     static void beforeAll() {
@@ -28,60 +28,55 @@ class FilenamePropertyIndexSupplierTest {
     }
 
     @Test
-    void dotSeparator_shouldIndexAllFiles() {
-        setUpSupplier(".");
+    void resourceDirectory_shouldBeIndexed_withDotSeparator() {
+        System.setProperty(FilenamePropertyIndexSupplier.SEPARATOR_PROPERTY, ".");
 
-        Map<String, String> index = supplier.get();
+        createIndex();
 
         assertNotNull(index);
         assertEquals(7, index.size());
 
-        assertTrue(index.containsKey("secret.empty"));
-        assertEquals(fileUriFromClasspath("secret.empty"), index.get("secret.empty"));
-
-        assertTrue(index.containsKey("spring.datasource.password"));
-        assertEquals(fileUriFromClasspath("spring.datasource.password"), index.get("spring.datasource.password"));
-
-        assertTrue(index.containsKey("spring.datasource.username"));
-        assertEquals(fileUriFromClasspath("spring.datasource.username"), index.get("spring.datasource.username"));
-
-        assertTrue(index.containsKey("spring_mail_host"));
-        assertEquals(fileUriFromClasspath("spring_mail_host"), index.get("spring_mail_host"));
-
-        assertTrue(index.containsKey("application-file-sample.properties"));
-        assertEquals(fileUriFromClasspath("application-file-sample.properties"), index.get("application-file-sample.properties"));
-
-        assertTrue(index.containsKey("application-env-sample.properties"));
-        assertEquals(fileUriFromClasspath("application-env-sample.properties"), index.get("application-env-sample.properties"));
+        assertEntry("application-env-sample.properties", fileUriFromClasspath("application-env-sample.properties"));
+        assertEntry("application-file-sample.properties", fileUriFromClasspath("application-file-sample.properties"));
+        assertEntry("secret.empty", fileUriFromClasspath("secret.empty"));
+        assertEntry("spring.datasource.password", fileUriFromClasspath("spring.datasource.password"));
+        assertEntry("spring.datasource.username", fileUriFromClasspath("spring.datasource.username"));
+        assertEntry("spring_datasource_password", fileUriFromClasspath("spring_datasource_password"));
+        assertEntry("spring_mail_host", fileUriFromClasspath("spring_mail_host"));
     }
 
     @Test
-    void underscoreSeparators_shouldIndexUnderscoreSeparatedFiles() {
-        setUpSupplier("_");
+    void resourceDirectory_shouldBeIndexed_withUnderscoreSeparator() {
+        System.setProperty(FilenamePropertyIndexSupplier.SEPARATOR_PROPERTY, "_");
 
-        Map<String, String> index = supplier.get();
+        createIndex();
 
         assertNotNull(index);
         assertEquals(2, index.size());
 
-        assertTrue(index.containsKey("spring.datasource.password"));
-        assertEquals(fileUriFromClasspath("spring_datasource_password"), index.get("spring.datasource.password"));
-
-        assertTrue(index.containsKey("spring.mail.host"));
-        assertEquals(fileUriFromClasspath("spring_mail_host"), index.get("spring.mail.host"));
+        assertEntry("spring.datasource.password", fileUriFromClasspath("spring_datasource_password"));
+        assertEntry("spring.mail.host", fileUriFromClasspath("spring_mail_host"));
     }
 
     @Test
     void illegalSeparator_shouldThrowException() {
-        setUpSupplier("/");
+        System.setProperty(FilenamePropertyIndexSupplier.SEPARATOR_PROPERTY, "/");
+        ConfigurableEnvironment environment = new StandardEnvironment();
 
-        assertThrows(IllegalArgumentException.class, () -> supplier.get());
+        FilenamePropertyIndexSupplier supplier = new FilenamePropertyIndexSupplier(Supplier::get, environment);
+
+        assertThrows(IllegalArgumentException.class, supplier::get);
     }
 
-    private void setUpSupplier(String separator) {
-        System.setProperty(FilenamePropertyIndexSupplier.SEPARATOR_PROPERTY, separator);
+    private void createIndex() {
         ConfigurableEnvironment environment = new StandardEnvironment();
-        this.supplier = new FilenamePropertyIndexSupplier(Supplier::get, environment);
+        FilenamePropertyIndexSupplier supplier = new FilenamePropertyIndexSupplier(Supplier::get, environment);
+        index = supplier.get();
+    }
+
+    private void assertEntry(String key, String value) {
+        assertTrue(index.containsKey(key));
+        assertEquals(value, index.get(key));
     }
 
     @AfterAll
