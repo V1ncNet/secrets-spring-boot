@@ -17,7 +17,7 @@ class FilenameConfigDataSecretsEnvironmentPostProcessorTest extends AbstractSecr
     }
 
     @Test
-    void applicationConfig_shouldPostProcessEnvironment() {
+    void applicationConfig_shouldBeProcessed() {
         addApplicationProperty("secrets.file.properties.spring.mail.host", "classpath:spring_mail_host");
 
         postProcessEnvironment();

@@ -20,7 +20,7 @@ class EnvironmentSecretsPropertyEnvironmentPostProcessorTest extends AbstractSec
     }
 
     @Test
-    void fileUri_shouldSetPasswordProperty() {
+    void suffixedEnvironmentProperty_shouldAddToEnvironment() {
         setProperty("SPRING_DATASOURCE_PASSWORD_FILE", fileUriFromClasspath("spring_datasource_password"));
 
         postProcessEnvironment();
