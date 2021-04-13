@@ -1,5 +1,6 @@
 package de.vinado.boot.secrets;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.logging.DeferredLogFactory;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -21,10 +22,17 @@ import static org.mockito.Mockito.when;
  */
 class EnvironmentPropertyIndexSupplierTest {
 
+    private ConfigurableEnvironment environment;
+    private Map<String, String> index;
+
+    @BeforeEach
+    void setUp() {
+        environment = spy(new StandardEnvironment());
+    }
+
     @Test
     void initializingNullArguments_shouldThrowException() {
         DeferredLogFactory logFactory = Supplier::get;
-        ConfigurableEnvironment environment = new StandardEnvironment();
 
         assertThrows(NullPointerException.class, () -> new EnvironmentPropertyIndexSupplier(logFactory, null));
         assertThrows(NullPointerException.class, () -> new EnvironmentPropertyIndexSupplier(null, environment));
@@ -38,57 +46,52 @@ class EnvironmentPropertyIndexSupplierTest {
 
     @Test
     void environmentProperties_shouldCreateIndex() {
-        Map<String, Object> properties = new HashMap<>();
-        properties.put("SPRING_DATASOURCE_USERNAME_FILE", "classpath:spring.datasource.username");
-        properties.put("SPRING_DATASOURCE_PASSWORD_FILE", "classpath:spring_datasource_password");
-        properties.put("HOME", "/home/bob");
-        properties.put("PASSWORD_FILE_SECRET", "foo");
+        addProperty("SPRING_DATASOURCE_USERNAME_FILE", "classpath:spring.datasource.username");
+        addProperty("SPRING_DATASOURCE_PASSWORD_FILE", "classpath:spring_datasource_password");
+        addProperty("HOME", "/home/bob");
+        addProperty("PASSWORD_FILE_SECRET", "foo");
 
-        ConfigurableEnvironment environment = spy(new StandardEnvironment());
-        EnvironmentPropertyIndexSupplier supplier = new EnvironmentPropertyIndexSupplier(Supplier::get, environment);
-        when(environment.getSystemEnvironment()).thenReturn(properties);
-        properties.forEach((key, value) -> when(environment.getProperty(key)).thenReturn(String.valueOf(value)));
-
-        Map<String, String> index = supplier.get();
+        createIndex("");
 
         assertNotNull(index);
-        assertEquals(4, index.size());
+        assertTrue(index.size() >= 4);
 
-        assertTrue(index.containsKey("spring.datasource.username.file"));
-        assertEquals("classpath:spring.datasource.username", index.get("spring.datasource.username.file"));
-
-        assertTrue(index.containsKey("spring.datasource.password.file"));
-        assertEquals("classpath:spring_datasource_password", index.get("spring.datasource.password.file"));
-
-        assertTrue(index.containsKey("home"));
-        assertEquals("/home/bob", index.get("home"));
-
-        assertTrue(index.containsKey("password.file.secret"));
-        assertEquals("foo", index.get("password.file.secret"));
+        assertEntry("spring.datasource.username.file", "classpath:spring.datasource.username");
+        assertEntry("spring.datasource.password.file", "classpath:spring_datasource_password");
+        assertEntry("home", "/home/bob");
+        assertEntry("password.file.secret", "foo");
     }
 
     @Test
     void fileSuffixEnvironmentProperties_shouldCreateIndex() {
-        Map<String, Object> properties = new HashMap<>();
-        properties.put("SPRING_DATASOURCE_USERNAME_FILE", "classpath:spring.datasource.username");
-        properties.put("SPRING_DATASOURCE_PASSWORD_FILE", "classpath:spring_datasource_password");
-        properties.put("HOME", "/home/bob");
-        properties.put("PASSWORD_FILE_SECRET", "foo");
+        addProperty("SPRING_DATASOURCE_USERNAME_FILE", "classpath:spring.datasource.username");
+        addProperty("SPRING_DATASOURCE_PASSWORD_FILE", "classpath:spring_datasource_password");
+        addProperty("HOME", "/home/bob");
+        addProperty("PASSWORD_FILE_SECRET", "foo");
 
-        ConfigurableEnvironment environment = spy(new StandardEnvironment());
-        EnvironmentPropertyIndexSupplier supplier = new EnvironmentPropertyIndexSupplier(Supplier::get, environment, "_FILE");
-        when(environment.getSystemEnvironment()).thenReturn(properties);
-        properties.forEach((key, value) -> when(environment.getProperty(key)).thenReturn(String.valueOf(value)));
-
-        Map<String, String> index = supplier.get();
+        createIndex("_FILE");
 
         assertNotNull(index);
         assertEquals(2, index.size());
 
-        assertTrue(index.containsKey("spring.datasource.username"));
-        assertEquals("classpath:spring.datasource.username", index.get("spring.datasource.username"));
+        assertEntry("spring.datasource.username", "classpath:spring.datasource.username");
+        assertEntry("spring.datasource.password", "classpath:spring_datasource_password");
+    }
 
-        assertTrue(index.containsKey("spring.datasource.password"));
-        assertEquals("classpath:spring_datasource_password", index.get("spring.datasource.password"));
+    private void addProperty(String key, String value) {
+        Map<String, Object> systemProperties = new HashMap<>(environment.getSystemEnvironment());
+        systemProperties.put(key, value);
+        when(environment.getSystemEnvironment()).thenReturn(systemProperties);
+        when(environment.getProperty(key)).thenReturn(value);
+    }
+
+    private void createIndex(String suffix) {
+        EnvironmentPropertyIndexSupplier supplier = new EnvironmentPropertyIndexSupplier(Supplier::get, environment, suffix);
+        index = supplier.get();
+    }
+
+    private void assertEntry(String key, String value) {
+        assertTrue(index.containsKey(key));
+        assertEquals(value, index.get(key));
     }
 }
