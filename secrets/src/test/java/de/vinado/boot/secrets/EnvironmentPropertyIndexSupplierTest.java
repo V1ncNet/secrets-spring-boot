@@ -36,14 +36,14 @@ class EnvironmentPropertyIndexSupplierTest {
     void initializingNullArguments_shouldThrowException() {
         DeferredLogFactory logFactory = Supplier::get;
 
-        assertThrows(NullPointerException.class, () -> new EnvironmentPropertyIndexSupplier(logFactory, null));
-        assertThrows(NullPointerException.class, () -> new EnvironmentPropertyIndexSupplier(null, environment));
-        assertThrows(NullPointerException.class, () -> new EnvironmentPropertyIndexSupplier(null, null));
+        assertThrows(IllegalArgumentException.class, () -> new EnvironmentPropertyIndexSupplier(logFactory, null));
+        assertThrows(IllegalArgumentException.class, () -> new EnvironmentPropertyIndexSupplier(null, environment));
+        assertThrows(IllegalArgumentException.class, () -> new EnvironmentPropertyIndexSupplier(null, null));
 
-        assertThrows(NullPointerException.class, () -> new EnvironmentPropertyIndexSupplier(logFactory, null, null));
-        assertThrows(NullPointerException.class, () -> new EnvironmentPropertyIndexSupplier(null, environment, null));
-        assertThrows(NullPointerException.class, () -> new EnvironmentPropertyIndexSupplier(null, null, "_FILE"));
-        assertThrows(NullPointerException.class, () -> new EnvironmentPropertyIndexSupplier(null, null, null));
+        assertThrows(IllegalArgumentException.class, () -> new EnvironmentPropertyIndexSupplier(logFactory, null, null));
+        assertThrows(IllegalArgumentException.class, () -> new EnvironmentPropertyIndexSupplier(null, environment, null));
+        assertThrows(IllegalArgumentException.class, () -> new EnvironmentPropertyIndexSupplier(null, null, "_FILE"));
+        assertThrows(IllegalArgumentException.class, () -> new EnvironmentPropertyIndexSupplier(null, null, null));
     }
 
     @Test

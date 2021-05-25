@@ -35,11 +35,11 @@ class SecretsEnvironmentTest {
     void initializingNullArguments_shouldThrowException() {
         PropertyIndexSupplier indexSupplier = Collections::emptyMap;
 
-        assertThrows(NullPointerException.class, () -> new SecretsEnvironment(Supplier::get, null, null, null));
-        assertThrows(NullPointerException.class, () -> new SecretsEnvironment(null, environment, null, null));
-        assertThrows(NullPointerException.class, () -> new SecretsEnvironment(null, null, resolver, null));
-        assertThrows(NullPointerException.class, () -> new SecretsEnvironment(null, null, null, indexSupplier));
-        assertThrows(NullPointerException.class, () -> new SecretsEnvironment(null, null, null, null));
+        assertThrows(IllegalArgumentException.class, () -> new SecretsEnvironment(Supplier::get, null, null, null));
+        assertThrows(IllegalArgumentException.class, () -> new SecretsEnvironment(null, environment, null, null));
+        assertThrows(IllegalArgumentException.class, () -> new SecretsEnvironment(null, null, resolver, null));
+        assertThrows(IllegalArgumentException.class, () -> new SecretsEnvironment(null, null, null, indexSupplier));
+        assertThrows(IllegalArgumentException.class, () -> new SecretsEnvironment(null, null, null, null));
     }
 
     @Test
