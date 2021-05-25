@@ -16,7 +16,36 @@ jobs:
         with:
           java-version: '8'
           distribution: 'adopt'
-      - name: Compile
+      - name: Cache local Maven repository
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Lint sources
+        run: mvn -B checkstyle:check
+      - name: Compile sources
         run: mvn -B compile test-compile
-      - name: Test
+      - name: Run tests
         run: mvn -B test
+      - name: Package artifact
+        run: mvn -B -fae -DskipTests=true package
+
+      - name: Report Checkstyle results
+        uses: jwgmeligmeyling/checkstyle-github-action@v1.2
+        with:
+          path: '**/checkstyle-result.xml'
+      - name: Report Surefire results
+        uses: ScaCap/action-surefire-report@v1
+
+      - name: Aggregate JavaDoc
+        if: github.ref == 'refs/heads/main'
+        run: mvn -B javadoc:aggregate
+      - name: Deploy API docs
+        if: success()
+        uses: JamesIves/github-pages-deploy-action@4.1.1
+        with:
+          branch: gh-pages
+          folder: target/generated-docs
