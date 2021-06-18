@@ -1,2 +1,151 @@
 Spring Boot Secrets
--------------------
+===================
+
+Spring Boot Secrets is a collection of environment post-processors with which
+files with sensitive content, so-called secrets, can be loaded and added to
+the Spring configuration.
+
+The project currently provides four sophisticated post-processors. These can
+either be used individually or concurrently. If you want to implement your
+own post-processor, use the API artifact, which is available separately.
+
+Spring Boot Secrets is ideal for resolving **Docker Secrets** and making them
+accessible to the Spring Boot application.
+
+**Note:** Compatible with Spring Boot > 2.4.4
+
+
+Features
+--------
+
+* 4 configurable post-processors
+* separated API artifact
+
+
+Usage
+-----
+
+In order to activate one or, if necessary, several post processors, the
+`META-INF/spring.factories` file must be created in the `resources/` folder.
+One or more post-processors can then be added to this file as required.
+
+```properties
+org.springframework.boot.env.EnvironmentPostProcessor=\
+  de.vinado.boot.secrets.FilenameConfigDataSecretsEnvironmentPostProcessor,\
+  de.vinado.boot.secrets.EnvironmentConfigDataSecretsEnvironmentPostProcessor,\
+  de.vinado.boot.secrets.FilenameSecretsEnvironmentPostProcessor,\
+  de.vinado.boot.secrets.EnvironmentSecretsPropertyEnvironmentPostProcessor
+```
+
+The post-processors have an order of execution which can be taken from the
+example above. It should be noted that the post-processors can overwrite the
+set values of the previously executed ones if they set the same property. The
+order is fixed and cannot be changed.
+
+### Maven Configuration
+
+The collection is available under following coordinates:
+
+```xml
+<dependency>
+    <groupId>de.vinado.spring</groupId>
+    <artifactId>spring-boot-secrets</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+</dependency>
+```
+
+or use the following coordinates if you just wish to implement your own
+post-processors:
+
+```xml
+<dependency>
+    <groupId>de.vinado.spring</groupId>
+    <artifactId>spring-boot-secrets-api</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+</dependency>
+```
+
+
+Available Post-Prozessoren
+---------------------------
+
+### `FilenameConfigDataSecretsEnvironmentPostProcessor`
+
+This post-processor loads the properties already set by Spring Boot from the
+`application.{properties|yml}` file. All file names prefixed with
+`secrets.file.properties` are processed.
+
+```properties
+secrets.file.properties.spring.mail.host=classpath:spring_mail_host
+secrets.file.properties.spring.datasource.username=/run/secrets/spring.datasource.username
+secrets.file.properties.spring.datasource.password=file:/run/secrets/spring.datasource.password
+```
+
+As with the following post-processor, the values can be specified using an
+absolute path or URI.
+
+### `EnvironmentConfigDataSecretsEnvironmentPostProcessor`
+
+This component works similarly to the
+`FilenameConfigDataSecretsEnvironmentPostProcessor`. The prefix for all
+properties to be processed is `secrets.env.properties`. However, this
+post-processor expects system properties or environment variables, which are
+additionally substituted before they are made available to the application.
+
+```properties
+secrets.file.properties.spring.mail.host=SMTP_USER_FILE_LOCATION
+secrets.file.properties.spring.datasource.username=EMPTY_SECRET_FILE
+```
+
+### `FilenameSecretsEnvironmentPostProcessor`
+
+The `FilenameSecretsEnvironmentPostProcessor` is interesting for those who
+deploy their Spring Boot application in Docker Swarm Mode and want to use
+Docker Secrets. By default, all files located under `/run/secrets` are resolved
+and added to the Spring configuration.
+
+However, all file names must follow a certain syntax so that they can then be
+assigned to the correct configuration. The file with the name
+`spring.datasource.password` becomes the property `spring.datasource.password`
+and the content of the file, its value.
+
+The base directory and separator can be configured. The separator can
+alternatively take the value `'_'` and will be replaced by a point during
+processing.
+
+### `EnvironmentSecretsPropertyEnvironmentPostProcessor`
+
+This post processor is also for those who use Docker Secrets. All environment
+variables ending with `_FILE` are processed. The name of the variable forms the
+name of the property to be set with its suffixed stripped off. Again, the
+underscores are replaced by dots.
+
+#### Example
+
+```shell
+echo /run/secrets/database_password > foo
+export SPRING_DATASOURCE_PASSWORD_FILE=/run/secrets/database_password
+```
+
+becomes
+
+```properties
+spring.datasource.password=foo
+```
+
+
+Configuration
+-------------
+
+| application.properties  | Data Type  | Default Value  | Example                                                              | Post-Processor                                         |
+| ----------------------- | ---------- | -------------- | -------------------------------------------------------------------- | ------------------------------------------------------ |
+| secrets.file.properties | _`Map`_    |                | `spring.datasource.username=/run/secrets/spring.datasource.username` | `FilenameConfigDataSecretsEnvironmentPostProcessor`    |
+| secrets.file.base-dir   | _`String`_ | `/run/secrets` | `/some/base/directory`                                               | `FilenameSecretsEnvironmentPostProcessor`              |
+| secrets.file.separator  | _`char`_   | `'.'`          | Only `'.'` or `'_'`                                                  | `FilenameSecretsEnvironmentPostProcessor`              |
+| secrets.env.properties  | _`Map`_    |                | `spring.mail.host=SMTP_USER_FILE`                                    | `EnvironmentConfigDataSecretsEnvironmentPostProcessor` |
+
+
+Licence
+-------
+
+Apache License 2.0 - [Vinado](https://vinado.de) - Built with :heart: in Dresden
