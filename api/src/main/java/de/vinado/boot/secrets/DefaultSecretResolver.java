@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.lang.Nullable;
 import org.springframework.util.StreamUtils;
 import org.springframework.util.StringUtils;
 
@@ -31,7 +32,7 @@ public class DefaultSecretResolver implements SecretResolver {
      * @param location location from which the content is loaded
      * @return secret
      */
-    public Optional<String> loadContent(String location) {
+    public Optional<String> loadContent(@Nullable String location) {
         return Optional.ofNullable(location)
             .flatMap(resolveWith(resourceLoader))
             .map(this::readContent)

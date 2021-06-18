@@ -26,7 +26,7 @@ public class SecretPropertiesPropertySource extends MapPropertySource {
     /**
      * Merges the given source with existing <em>secretProperties</em> and adds them to the end of sources.
      *
-     * @param source  the map to be merged
+     * @param source  the map to be merged; must not be {@literal null}
      * @param sources the collection of property sources to add the source to; must not be {@literal null}
      */
     public static void merge(Map<String, Object> source, MutablePropertySources sources) {
@@ -52,6 +52,9 @@ public class SecretPropertiesPropertySource extends MapPropertySource {
     private static void mergeIfPossible(Map<String, Object> source, MutablePropertySources sources,
                                         Map<String, Object> resultingSource) {
         PropertySource<?> existingSource = sources.get(NAME);
+        if (null == existingSource) {
+            return;
+        }
         Object underlyingSource = existingSource.getSource();
         if (underlyingSource instanceof Map) {
             resultingSource.putAll((Map<String, Object>) underlyingSource);

@@ -1,6 +1,7 @@
 package de.vinado.boot.secrets;
 
 import org.springframework.core.env.PropertyResolver;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import java.util.Map;
@@ -24,6 +25,7 @@ public interface PropertyIndexSupplier extends Supplier<Map<String, String>> {
      * @return new instance of a substituting index supplier
      */
     default PropertyIndexSupplier substituteValues(PropertyResolver resolver) {
+        Assert.notNull(resolver, "Property resolver must not be null");
         return () -> get().entrySet().stream()
             .filter(entry -> StringUtils.hasText(resolver.getProperty(entry.getValue())))
             .collect(Collectors.toMap(Map.Entry::getKey, substituteValue(resolver)));

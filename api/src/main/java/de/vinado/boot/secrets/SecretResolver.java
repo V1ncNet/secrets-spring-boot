@@ -1,5 +1,7 @@
 package de.vinado.boot.secrets;
 
+import org.springframework.lang.Nullable;
+
 import java.net.URI;
 import java.util.Optional;
 
@@ -17,7 +19,7 @@ public interface SecretResolver {
      * @param location location from which the content is loaded
      * @return secret
      */
-    Optional<String> loadContent(String location);
+    Optional<String> loadContent(@Nullable String location);
 
     /**
      * Loads the content from the given URI.
@@ -25,7 +27,8 @@ public interface SecretResolver {
      * @param location location from which the content is loaded
      * @return secret
      */
-    default Optional<String> loadContent(URI location) {
-        return loadContent(location.toString());
+    default Optional<String> loadContent(@Nullable URI location) {
+        return Optional.ofNullable(location)
+            .flatMap(uri -> loadContent(uri.toString()));
     }
 }

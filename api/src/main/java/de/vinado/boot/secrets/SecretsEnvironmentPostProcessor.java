@@ -26,12 +26,12 @@ public abstract class SecretsEnvironmentPostProcessor implements EnvironmentPost
 
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
-        postProcessEnvironment(environment, application.getResourceLoader());
+        ResourceLoader resourceLoader = application.getResourceLoader();
+        postProcessEnvironment(environment, null == resourceLoader ? new DefaultResourceLoader() : resourceLoader);
     }
 
     void postProcessEnvironment(ConfigurableEnvironment environment, ResourceLoader resourceLoader) {
         log.trace("Post-processing environment to add secrets");
-        resourceLoader = null == resourceLoader ? new DefaultResourceLoader() : resourceLoader;
         createSecretsEnvironment(environment, resourceLoader).processAndApply();
     }
 
