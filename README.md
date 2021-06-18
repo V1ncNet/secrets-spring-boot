@@ -66,7 +66,7 @@ post-processors:
 ```
 
 
-Available Post-Prozessoren
+Available Post-Processors
 ---------------------------
 
 ### `FilenameConfigDataSecretsEnvironmentPostProcessor`
