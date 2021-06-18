@@ -9,6 +9,8 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 /**
+ * Collection of utility functions.
+ *
  * @author Vincent Nadoll
  */
 final class Utils {

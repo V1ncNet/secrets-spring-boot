@@ -72,7 +72,7 @@
     </module>
     <module name="NeedBraces">
       <property name="tokens"
-               value="LITERAL_DO, LITERAL_ELSE, LITERAL_FOR, LITERAL_IF, LITERAL_WHILE"/>
+               value="LITERAL_DO, LITERAL_FOR, LITERAL_WHILE"/>
     </module>
     <module name="LeftCurly">
       <property name="tokens"
@@ -326,13 +326,6 @@
       <property name="allowMissingReturnTag" value="true"/>
       <property name="allowedAnnotations" value="Override, Test"/>
       <property name="tokens" value="METHOD_DEF, CTOR_DEF, ANNOTATION_FIELD_DEF, COMPACT_CTOR_DEF"/>
-    </module>
-    <module name="MissingJavadocMethod">
-      <property name="scope" value="public"/>
-      <property name="minLineCount" value="2"/>
-      <property name="allowedAnnotations" value="Override, Test"/>
-      <property name="tokens" value="METHOD_DEF, CTOR_DEF, ANNOTATION_FIELD_DEF,
-                                   COMPACT_CTOR_DEF"/>
     </module>
     <module name="MissingJavadocType">
       <property name="scope" value="protected"/>

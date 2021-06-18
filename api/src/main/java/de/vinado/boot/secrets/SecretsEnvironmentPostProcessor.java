@@ -9,8 +9,8 @@ import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.ResourceLoader;
 
 /**
- * An {@link EnvironmentPostProcessor} that loads and applies a {@link SecretsEnvironment} to Spring's
- * {@link org.springframework.core.env.Environment}.
+ * An {@link EnvironmentPostProcessor} that loads and applies a {@link SecretsEnvironment} to Spring's {@link
+ * org.springframework.core.env.Environment}.
  *
  * @author Vincent Nadoll
  */
@@ -42,7 +42,8 @@ public abstract class SecretsEnvironmentPostProcessor implements EnvironmentPost
      * @param resourceLoader the resource loader to be used
      * @return new instance of {@link SecretsEnvironment}
      */
-    protected SecretsEnvironment createSecretsEnvironment(ConfigurableEnvironment environment, ResourceLoader resourceLoader) {
+    protected SecretsEnvironment createSecretsEnvironment(ConfigurableEnvironment environment,
+                                                          ResourceLoader resourceLoader) {
         SecretResolver secretResolver = getSecretResolver(resourceLoader);
         PropertyIndexSupplier indexSupplier = getPropertyIndexSupplier(environment);
         return new SecretsEnvironment(logFactory, environment, secretResolver, indexSupplier);

@@ -12,8 +12,8 @@ import java.util.function.Consumer;
 import static de.vinado.boot.secrets.Utils.acceptAndLog;
 
 /**
- * A wrapper around {@link ConfigurableEnvironment} which loads secrets and applies them to
- * {@link SecretPropertiesPropertySource}.
+ * A wrapper around {@link ConfigurableEnvironment} which loads secrets and applies them to {@link
+ * SecretPropertiesPropertySource}.
  *
  * @author Vincent Nadoll
  */
@@ -46,7 +46,8 @@ public class SecretsEnvironment {
             String propertyName = entry.getKey();
             String location = entry.getValue();
             resolver.loadContent(location)
-                .ifPresent(acceptAndLog(putTo(propertyName), log::info, "Use secret value to set [%s]", propertyValue -> propertyName));
+                .ifPresent(acceptAndLog(putTo(propertyName), log::info, "Use secret value to set [%s]",
+                    propertyValue -> propertyName));
         }
     }
 

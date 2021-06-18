@@ -30,6 +30,8 @@ public interface PropertyIndexSupplier extends Supplier<Map<String, String>> {
     }
 
     /**
+     * Substitutes the entry's value.
+     *
      * @param resolver the component that resolves system property
      * @return a function which substitutes the entry's value
      */
@@ -40,6 +42,8 @@ public interface PropertyIndexSupplier extends Supplier<Map<String, String>> {
     }
 
     /**
+     * Substitutes the entry's value.
+     *
      * @param resolver the component that resolves system property
      * @return a function which substitutes the its argument
      */

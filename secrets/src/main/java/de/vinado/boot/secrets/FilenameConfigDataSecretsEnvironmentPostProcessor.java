@@ -5,12 +5,13 @@ import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
 
 /**
- * An environment post-processor that resolves <em>secrets.file.properties</em> from the application.properties
- * file and overrides existing properties.
+ * An environment post-processor that resolves <em>secrets.file.properties</em> from the application.properties file and
+ * overrides existing properties.
  *
  * @author Vincent Nadoll
  */
-public final class FilenameConfigDataSecretsEnvironmentPostProcessor extends SecretsEnvironmentPostProcessor implements Ordered {
+public final class FilenameConfigDataSecretsEnvironmentPostProcessor extends SecretsEnvironmentPostProcessor
+    implements Ordered {
 
     public static final String CONFIG_DATA_INFIX = "file";
     public static final int ORDER = FilenameSecretsEnvironmentPostProcessor.ORDER + 1;

@@ -10,7 +10,8 @@ import org.springframework.core.env.ConfigurableEnvironment;
  *
  * @author Vincent Nadoll
  */
-public final class EnvironmentConfigDataSecretsEnvironmentPostProcessor extends SecretsEnvironmentPostProcessor implements Ordered {
+public final class EnvironmentConfigDataSecretsEnvironmentPostProcessor extends SecretsEnvironmentPostProcessor
+    implements Ordered {
 
     public static final String CONFIG_DATA_INFIX = "env";
     public static final int ORDER = FilenameConfigDataSecretsEnvironmentPostProcessor.ORDER + 1;

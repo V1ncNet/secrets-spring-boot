@@ -11,7 +11,8 @@ import java.util.function.Supplier;
  *
  * @author Vincent Nadoll
  */
-public final class EnvironmentSecretsPropertyEnvironmentPostProcessor extends SecretsEnvironmentPostProcessor implements Ordered {
+public final class EnvironmentSecretsPropertyEnvironmentPostProcessor extends SecretsEnvironmentPostProcessor
+    implements Ordered {
 
     public static final String ENV_VAR_SUFFIX = "_FILE";
     public static final int ORDER = EnvironmentConfigDataSecretsEnvironmentPostProcessor.ORDER + 1;

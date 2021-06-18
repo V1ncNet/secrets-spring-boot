@@ -19,10 +19,12 @@ import static de.vinado.boot.secrets.Utils.substring;
 import static de.vinado.boot.secrets.Utils.testAndLogFailure;
 
 /**
+ * <p>
  * A supplier implementation for creating a property index over a map of application configuration properties from
  * application.properties (or similar). These properties are prefixed with <em>secrets.file.properties</em>.
- * <p>
+ * </p><p>
  * <em>secrets.&lt;infix&gt;.properties.spring.mail.host</em> → <em>spring.mail.host</em>
+ * </p>
  *
  * @author Vincent Nadoll
  */
@@ -53,7 +55,8 @@ public class ConfigDataPropertyIndexSupplier implements PropertyIndexSupplier {
             .map(Map::keySet)
             .flatMap(Set::stream)
             .filter(startsWith(prefix))
-            .filter(testAndLogFailure(this::isValid, log::warn, "Property [%s] is too short to assign.", Function.identity()))
+            .filter(testAndLogFailure(this::isValid, log::warn, "Property [%s] is too short to assign.",
+                Function.identity()))
             .collect(Collectors.toMap(substring(prefix.length() + 1), resolver::getProperty));
     }
 

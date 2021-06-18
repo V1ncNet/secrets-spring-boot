@@ -22,13 +22,15 @@ import java.util.stream.Stream;
 import static de.vinado.boot.secrets.Utils.testAndLogFailure;
 
 /**
+ * <p>
  * A supplier for creating a property index over filenames in a configurable directory. The property name is based on
  * this filename. The file 'spring.datasource.username' will add the 'spring.datasource.username' property key and its
  * URI as value of the index. Filenames in snake case will work as well (spring_datasource_username). Other characters
  * won't be altered.
- * <p>
+ * </p><p>
  * The supplier will fall back to <em>/run/secrets</em>, Docker's default secretes path, in case
  * <em>secrets.file.base-dir</em> is not set.
+ * </p>
  *
  * @author Vincent Nadoll
  */
@@ -56,7 +58,8 @@ public class FilenamePropertyIndexSupplier implements PropertyIndexSupplier {
             .filter(Files::isDirectory)
             .map(this::listFiles)
             .orElse(Stream.empty())
-            .filter(testAndLogFailure(this::isAllowed, log::warn, "Skipping ambiguous file %s, because of separator '%s'", Path::toAbsolutePath, path -> separator))
+            .filter(testAndLogFailure(this::isAllowed, log::warn,
+                "Skipping ambiguous file %s, because of separator '%s'", Path::toAbsolutePath, path -> separator))
             .collect(Collectors.toMap(this::convertToPropertyName, this::toUri));
     }
 
@@ -102,6 +105,11 @@ public class FilenamePropertyIndexSupplier implements PropertyIndexSupplier {
         return path.toUri().toString();
     }
 
+    /**
+     * Enumeration of available filename name separators.
+     *
+     * @author Vincent Nadoll
+     */
     @Getter
     @RequiredArgsConstructor
     public enum Separator {
