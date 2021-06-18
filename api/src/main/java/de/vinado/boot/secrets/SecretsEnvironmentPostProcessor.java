@@ -49,9 +49,25 @@ public abstract class SecretsEnvironmentPostProcessor implements EnvironmentPost
         return new SecretsEnvironment(logFactory, environment, secretResolver, indexSupplier);
     }
 
+    /**
+     * Creates a new instance of a {@link SecretResolver}.
+     *
+     * @param resourceLoader Spring's {@link ResourceLoader} creating {@link org.springframework.core.io.Resource}s;
+     *                       never {@literal null}
+     * @return a new instance of a {@link SecretResolver}
+     */
     protected SecretResolver getSecretResolver(ResourceLoader resourceLoader) {
         return new DefaultSecretResolver(resourceLoader);
     }
 
+    /**
+     * Creates a new instance of {@link PropertyIndexSupplier} providing a map of configuration property keys and its
+     * locations. Use {@link PropertyIndexSupplier#substituteValues(org.springframework.core.env.PropertyResolver)} if
+     * you provided values which has to be substituted first.
+     *
+     * @param environment the current {@link ConfigurableEnvironment} and
+     *                    {@link org.springframework.core.env.PropertyResolver}; never {@literal null}
+     * @return a new instance of a {@link PropertyIndexSupplier}
+     */
     protected abstract PropertyIndexSupplier getPropertyIndexSupplier(ConfigurableEnvironment environment);
 }
