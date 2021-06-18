@@ -4,6 +4,7 @@ import org.springframework.core.env.PropertyResolver;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -51,5 +52,16 @@ public interface PropertyIndexSupplier extends Supplier<Map<String, String>> {
      */
     default UnaryOperator<String> substitute(PropertyResolver resolver) {
         return resolver::getProperty;
+    }
+
+    /**
+     * Creates a instance of this {@link PropertyIndexSupplier} by supplying just the given map.
+     *
+     * @param properties must not be {@literal null}
+     * @return new instance of {@link PropertyIndexSupplier}
+     */
+    static PropertyIndexSupplier from(Map<String, String> properties) {
+        Assert.notNull(properties, "Properties must not be null");
+        return () -> new HashMap<>(properties);
     }
 }
