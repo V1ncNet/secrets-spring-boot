@@ -1,9 +1,9 @@
 package de.vinado.boot.secrets;
 
-import lombok.NonNull;
 import org.apache.commons.logging.Log;
 import org.springframework.boot.logging.DeferredLogFactory;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.util.Assert;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,10 +26,13 @@ public class SecretsEnvironment {
 
     private final Map<String, Object> source = new HashMap<>();
 
-    public SecretsEnvironment(@NonNull DeferredLogFactory logFactory,
-                              @NonNull ConfigurableEnvironment environment,
-                              @NonNull SecretResolver resolver,
-                              @NonNull PropertyIndexSupplier propertyIndexSupplier) {
+    public SecretsEnvironment(DeferredLogFactory logFactory, ConfigurableEnvironment environment,
+                              SecretResolver resolver, PropertyIndexSupplier propertyIndexSupplier) {
+        Assert.notNull(logFactory, "Log factory must not be null");
+        Assert.notNull(environment, "Environment must not be null");
+        Assert.notNull(resolver, "Resolver must not be null");
+        Assert.notNull(propertyIndexSupplier, "Property index supplier must not be null");
+
         this.log = logFactory.getLog(getClass());
         this.environment = environment;
         this.resolver = resolver;

@@ -1,9 +1,9 @@
 package de.vinado.boot.secrets;
 
-import lombok.NonNull;
 import org.apache.commons.logging.Log;
 import org.springframework.boot.logging.DeferredLogFactory;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import java.util.Map;
@@ -31,14 +31,16 @@ public class EnvironmentPropertyIndexSupplier implements PropertyIndexSupplier {
     private final ConfigurableEnvironment environment;
     private final String suffix;
 
-    public EnvironmentPropertyIndexSupplier(@NonNull DeferredLogFactory logFactory,
-                                            @NonNull ConfigurableEnvironment environment) {
+    public EnvironmentPropertyIndexSupplier(DeferredLogFactory logFactory, ConfigurableEnvironment environment) {
         this(logFactory, environment, "");
     }
 
-    public EnvironmentPropertyIndexSupplier(@NonNull DeferredLogFactory logFactory,
-                                            @NonNull ConfigurableEnvironment environment,
-                                            @NonNull String suffix) {
+    public EnvironmentPropertyIndexSupplier(DeferredLogFactory logFactory, ConfigurableEnvironment environment,
+                                            String suffix) {
+        Assert.notNull(logFactory, "Log factory must not be null");
+        Assert.notNull(environment, "Environment must not be null");
+        Assert.notNull(suffix, "Suffix must not be null");
+
         this.environment = environment;
         this.suffix = suffix;
 

@@ -1,10 +1,10 @@
 package de.vinado.boot.secrets;
 
-import lombok.NonNull;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertySource;
 import org.springframework.core.env.StandardEnvironment;
+import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import java.util.HashMap;
@@ -27,9 +27,12 @@ public class SecretPropertiesPropertySource extends MapPropertySource {
      * Merges the given source with existing <em>secretProperties</em> and adds them to the end of sources.
      *
      * @param source  the map to be merged
-     * @param sources the collection of property sources to add the source to
+     * @param sources the collection of property sources to add the source to; must not be {@literal null}
      */
-    public static void merge(Map<String, Object> source, @NonNull MutablePropertySources sources) {
+    public static void merge(Map<String, Object> source, MutablePropertySources sources) {
+        Assert.notNull(source, "Property sources must not be null");
+        Assert.notNull(sources, "Property sources must not be null");
+
         if (CollectionUtils.isEmpty(source)) {
             return;
         }

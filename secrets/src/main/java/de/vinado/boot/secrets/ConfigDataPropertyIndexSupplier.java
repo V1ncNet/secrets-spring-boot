@@ -1,6 +1,5 @@
 package de.vinado.boot.secrets;
 
-import lombok.NonNull;
 import org.apache.commons.logging.Log;
 import org.springframework.boot.logging.DeferredLogFactory;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -8,6 +7,7 @@ import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertySource;
 import org.springframework.core.env.PropertySourcesPropertyResolver;
+import org.springframework.util.Assert;
 
 import java.util.Map;
 import java.util.Set;
@@ -36,9 +36,12 @@ public class ConfigDataPropertyIndexSupplier implements PropertyIndexSupplier {
     private final ConfigurableEnvironment environment;
     private final String prefix;
 
-    public ConfigDataPropertyIndexSupplier(@NonNull DeferredLogFactory logFactory,
-                                           @NonNull ConfigurableEnvironment environment,
-                                           @NonNull String propertyInfix) {
+    public ConfigDataPropertyIndexSupplier(DeferredLogFactory logFactory, ConfigurableEnvironment environment,
+                                           String propertyInfix) {
+        Assert.notNull(logFactory, "Log factory must not be null");
+        Assert.notNull(environment, "Environment must not be null");
+        Assert.hasText(propertyInfix, "Property infix must not be null or empty");
+
         this.log = logFactory.getLog(getClass());
         this.environment = environment;
         this.prefix = String.format(PROPERTY_PREFIX_TEMPLATE, propertyInfix);
