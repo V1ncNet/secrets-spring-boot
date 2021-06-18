@@ -14,7 +14,8 @@
         <module>secrets</module>
     </modules>
 
-    <name>spring-boot-secrets-parent</name>
+    <name>Spring Boot Secrets Parent</name>
+    <description>Maven Parent for Spring Boot Secrets</description>
     <url>https://github.com/V1ncNet/spring-boot-secrets.git</url>
 
     <licenses>
