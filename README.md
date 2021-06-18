@@ -110,7 +110,7 @@ assigned to the correct configuration. The file with the name
 and the content of the file, its value.
 
 The base directory and separator can be configured. The separator can
-alternatively take the value `'_'` and will be replaced by a point during
+alternatively take the value `_` and will be replaced by a point during
 processing.
 
 ### `EnvironmentSecretsPropertyEnvironmentPostProcessor`
@@ -141,7 +141,7 @@ Configuration
 | ----------------------- | ---------- | -------------- | -------------------------------------------------------------------- | ------------------------------------------------------ |
 | secrets.file.properties | _`Map`_    |                | `spring.datasource.username=/run/secrets/spring.datasource.username` | `FilenameConfigDataSecretsEnvironmentPostProcessor`    |
 | secrets.file.base-dir   | _`String`_ | `/run/secrets` | `/some/base/directory`                                               | `FilenameSecretsEnvironmentPostProcessor`              |
-| secrets.file.separator  | _`char`_   | `'.'`          | Only `'.'` or `'_'`                                                  | `FilenameSecretsEnvironmentPostProcessor`              |
+| secrets.file.separator  | _`String`_ | `.`            | Only `.` or `_`                                                      | `FilenameSecretsEnvironmentPostProcessor`              |
 | secrets.env.properties  | _`Map`_    |                | `spring.mail.host=SMTP_USER_FILE`                                    | `EnvironmentConfigDataSecretsEnvironmentPostProcessor` |
 
 
