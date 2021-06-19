@@ -42,6 +42,37 @@ example above. It should be noted that the post-processors can overwrite the
 set values of the previously executed ones if they set the same property. The
 order is fixed and cannot be changed.
 
+### API Package
+
+With the API package, new post-processors can be implemented quickly and easily.
+The API provides the `SecretsEnvironmentPostProcessor` class, which only has to
+be inherited from.
+
+```java
+public class DockerSecretProcessor extends SecretsEnvironmentPostProcessor {
+
+    public DockerSecretProcessor(DeferredLogFactory logFactory) {
+        super(logFactory);
+    }
+
+    @Override
+    protected PropertyIndexSupplier getPropertyIndexSupplier(ConfigurableEnvironment environment) {
+        Map<String, String> properties = new HashMap<>();
+        properties.put("spring.datasource.username", "DATABASE_USER_FILE");
+        properties.put("spring.datasource.password", "DATABASE_PASSWORD_FILE");
+        properties.put("spring.mail.username", "SMTP_USER_FILE");
+        properties.put("spring.mail.password", "SMTP_PASSWORD_FILE");
+        return PropertyIndexSupplier.from(properties)
+            .substituteValues(environment);
+    }
+}
+```
+
+spring.factories
+```properties
+org.springframework.boot.env.EnvironmentPostProcessor=package.of.your.DockerSecretProcessor
+```
+
 ### Maven Configuration
 
 The collection is available under following coordinates:
