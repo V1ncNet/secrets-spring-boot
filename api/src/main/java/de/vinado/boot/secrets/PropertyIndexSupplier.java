@@ -43,6 +43,7 @@ public interface PropertyIndexSupplier extends Supplier<Map<String, String>> {
      * @return a function which substitutes the entry's value
      */
     default Function<Map.Entry<?, String>, String> substituteValue(PropertyResolver resolver) {
+        Assert.notNull(resolver, "Property resolver must not be null");
         return substitute(resolver)
             .andThen(String::trim)
             .compose(Map.Entry::getValue);
@@ -55,6 +56,7 @@ public interface PropertyIndexSupplier extends Supplier<Map<String, String>> {
      * @return a function which substitutes the its argument
      */
     default UnaryOperator<String> substitute(PropertyResolver resolver) {
+        Assert.notNull(resolver, "Property resolver must not be null");
         return resolver::getProperty;
     }
 
