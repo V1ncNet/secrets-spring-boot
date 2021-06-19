@@ -3,6 +3,7 @@ package de.vinado.boot.secrets;
 import org.springframework.core.log.LogMessage;
 
 import java.util.Arrays;
+import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -64,5 +65,9 @@ final class Utils {
 
     public static Predicate<String> endsWith(String suffix) {
         return key -> key.endsWith(suffix);
+    }
+
+    public static <V> Predicate<Entry<?, V>> value(Predicate<V> predicate) {
+        return entry -> predicate.test(entry.getValue());
     }
 }

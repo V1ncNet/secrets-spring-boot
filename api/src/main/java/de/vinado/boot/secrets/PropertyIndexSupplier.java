@@ -7,9 +7,12 @@ import org.springframework.util.StringUtils;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
+
+import static de.vinado.boot.secrets.Utils.value;
 
 /**
  * An interface for specifying {@link Supplier}'s type.
@@ -27,8 +30,9 @@ public interface PropertyIndexSupplier extends Supplier<Map<String, String>> {
      */
     default PropertyIndexSupplier substituteValues(PropertyResolver resolver) {
         Assert.notNull(resolver, "Property resolver must not be null");
+        Predicate<String> wherePropertyHasText = value -> StringUtils.hasText(resolver.getProperty(value));
         return () -> get().entrySet().stream()
-            .filter(entry -> StringUtils.hasText(resolver.getProperty(entry.getValue())))
+            .filter(value(wherePropertyHasText))
             .collect(Collectors.toMap(Map.Entry::getKey, substituteValue(resolver)));
     }
 
