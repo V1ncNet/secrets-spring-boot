@@ -57,13 +57,21 @@ public class DockerSecretProcessor extends SecretsEnvironmentPostProcessor {
 
     @Override
     protected PropertyIndexSupplier getPropertyIndexSupplier(ConfigurableEnvironment environment) {
-        Map<String, String> properties = new HashMap<>();
-        properties.put("spring.datasource.username", "DATABASE_USER_FILE");
-        properties.put("spring.datasource.password", "DATABASE_PASSWORD_FILE");
-        properties.put("spring.mail.username", "SMTP_USER_FILE");
-        properties.put("spring.mail.password", "SMTP_PASSWORD_FILE");
-        return PropertyIndexSupplier.from(properties)
-            .substituteValues(environment);
+        Map<String, String> envProperties = new HashMap<>();
+        envProperties.put("spring.datasource.username", "DATABASE_USER_FILE");
+        envProperties.put("spring.datasource.password", "DATABASE_PASSWORD_FILE");
+        envProperties.put("spring.mail.username", "SMTP_USER_FILE");
+        envProperties.put("spring.mail.password", "SMTP_PASSWORD_FILE");
+        PropertyIndexSupplier env = PropertyIndexSupplier.from(envProperties);
+
+        Map<String, String> fileProperties = new HashMap<>();
+        fileProperties.put("spring.mail.username", "/run/secrets/smtp_username");
+        fileProperties.put("spring.mail.password", "/run/secrets/smtp_password");
+
+        return CompositePropertyIndexSupplier.overriding()
+            .add(env)
+            .add(fileProperties)
+            .buildAndSubstitute(environment);
     }
 }
 ```

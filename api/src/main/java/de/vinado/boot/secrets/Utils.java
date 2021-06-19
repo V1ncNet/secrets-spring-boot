@@ -70,4 +70,14 @@ final class Utils {
     public static <V> Predicate<Entry<?, V>> value(Predicate<V> predicate) {
         return entry -> predicate.test(entry.getValue());
     }
+
+    public static <K, V> UnaryOperator<Entry<K, V>> value(UnaryOperator<V> remappingFunction) {
+        return entry -> remapValue(entry, remappingFunction);
+    }
+
+    private static <K, V> Entry<K, V> remapValue(Entry<K, V> entry, UnaryOperator<V> remappingFunction) {
+        V newValue = remappingFunction.apply(entry.getValue());
+        entry.setValue(newValue);
+        return entry;
+    }
 }
