@@ -2,19 +2,27 @@ package de.vinado.boot.secrets;
 
 import org.apache.commons.logging.Log;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.context.config.ConfigDataEnvironmentPostProcessor;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.boot.logging.DeferredLogFactory;
+import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.ResourceLoader;
 
 /**
+ * <p>
  * An {@link EnvironmentPostProcessor} that loads and applies a {@link SecretsEnvironment} to Spring's {@link
  * org.springframework.core.env.Environment}.
+ * </p><p>
+ * This component implements {@link Ordered} to draw attention to the fact, that {@link SecretsEnvironmentPostProcessor}
+ * must be executed after {@link ConfigDataEnvironmentPostProcessor} in order to override configuration properties. I'd
+ * recommend to set the value to {@code ConfigDataEnvironmentPostProcessor.ORDER + n}.
+ * </p>
  *
  * @author Vincent Nadoll
  */
-public abstract class SecretsEnvironmentPostProcessor implements EnvironmentPostProcessor {
+public abstract class SecretsEnvironmentPostProcessor implements EnvironmentPostProcessor, Ordered {
 
     private final Log log;
     private final DeferredLogFactory logFactory;
@@ -70,4 +78,9 @@ public abstract class SecretsEnvironmentPostProcessor implements EnvironmentPost
      * @return a new instance of a {@link PropertyIndexSupplier}
      */
     protected abstract PropertyIndexSupplier getPropertyIndexSupplier(ConfigurableEnvironment environment);
+
+    @Override
+    public int getOrder() {
+        return ConfigDataEnvironmentPostProcessor.ORDER + 100;
+    }
 }
