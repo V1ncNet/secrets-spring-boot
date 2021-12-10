@@ -91,7 +91,7 @@ class DefaultSecretResolverTest {
     }
 
     private static URI fromFile(String name) {
-        String pathname = String.format("%s/src/test/resources/%s", System.getProperty("user.dir"), name);
+        String pathname = System.getProperty("user.dir") + "/src/test/resources/" + name;
         File file = new File(pathname);
         return file.toURI();
     }

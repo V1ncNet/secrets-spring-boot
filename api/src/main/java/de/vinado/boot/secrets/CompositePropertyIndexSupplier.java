@@ -80,7 +80,7 @@ public class CompositePropertyIndexSupplier implements PropertyIndexSupplier {
      */
     public static Builder builder() {
         return CompositePropertyIndexSupplier.using((u, v) -> {
-            throw new IllegalStateException(String.format("Duplicate key %s", u));
+            throw new IllegalStateException("Duplicate key " + u);
         });
     }
 

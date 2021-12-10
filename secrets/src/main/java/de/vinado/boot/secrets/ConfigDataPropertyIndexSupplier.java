@@ -30,8 +30,6 @@ import static de.vinado.boot.secrets.Utils.testAndLogFailure;
  */
 public class ConfigDataPropertyIndexSupplier implements PropertyIndexSupplier {
 
-    private static final String PROPERTY_PREFIX_TEMPLATE = "secrets.%s.properties";
-
     private final Log log;
     private final ConfigurableEnvironment environment;
     private final String prefix;
@@ -44,7 +42,7 @@ public class ConfigDataPropertyIndexSupplier implements PropertyIndexSupplier {
 
         this.log = logFactory.getLog(getClass());
         this.environment = environment;
-        this.prefix = String.format(PROPERTY_PREFIX_TEMPLATE, propertyInfix);
+        this.prefix = "secrets." + propertyInfix + ".properties";
     }
 
     @Override
