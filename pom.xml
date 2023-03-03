@@ -50,9 +50,7 @@
         <skipCheckstyle>false</skipCheckstyle>
 
         <dependency.checkstyle.version>8.41.1</dependency.checkstyle.version>
-        <dependency.spring-boot.version>2.4.4</dependency.spring-boot.version>
-
-        <convergence.lombok.verison>1.18.26</convergence.lombok.verison>
+        <dependency.spring-boot.version>3.0.3</dependency.spring-boot.version>
 
         <plugin.checkstyle.version>3.1.2</plugin.checkstyle.version>
         <plugin.compiler.version>3.10.1</plugin.compiler.version>
@@ -71,12 +69,6 @@
                 <version>${dependency.spring-boot.version}</version>
                 <scope>import</scope>
                 <type>pom</type>
-            </dependency>
-
-            <dependency>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <version>${convergence.lombok.verison}</version>
             </dependency>
 
             <dependency>
