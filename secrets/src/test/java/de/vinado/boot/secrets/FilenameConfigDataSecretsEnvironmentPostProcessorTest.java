@@ -6,9 +6,6 @@ import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- * @author Vincent Nadoll
- */
 class FilenameConfigDataSecretsEnvironmentPostProcessorTest extends AbstractSecretsEnvironmentPostProcessorTest {
 
     @Override

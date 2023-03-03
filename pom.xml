@@ -49,10 +49,10 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <skipCheckstyle>false</skipCheckstyle>
 
-        <dependency.checkstyle.version>8.41.1</dependency.checkstyle.version>
+        <dependency.checkstyle.version>10.7.0</dependency.checkstyle.version>
         <dependency.spring-boot.version>3.0.3</dependency.spring-boot.version>
 
-        <plugin.checkstyle.version>3.1.2</plugin.checkstyle.version>
+        <plugin.checkstyle.version>3.2.1</plugin.checkstyle.version>
         <plugin.compiler.version>3.10.1</plugin.compiler.version>
         <plugin.gpg.version>1.6</plugin.gpg.version>
         <plugin.javadoc.version>3.5.0</plugin.javadoc.version>
@@ -144,6 +144,26 @@
                     <consoleOutput>true</consoleOutput>
                     <skip>${skipCheckstyle}</skip>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>lint-sources</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>lint-tests</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectories>src/test</sourceDirectories>
+                            <suppressionsLocation>checkstyle-suppression-tests.xml</suppressionsLocation>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
 

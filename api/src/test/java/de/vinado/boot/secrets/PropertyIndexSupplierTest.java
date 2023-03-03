@@ -13,9 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/**
- * @author Vincent Nadoll
- */
 class PropertyIndexSupplierTest {
 
     @BeforeAll
@@ -28,8 +25,9 @@ class PropertyIndexSupplierTest {
     void testSubstitution() {
         PropertyResolver resolver = new StandardEnvironment();
 
-        PropertyIndexSupplier supplier = ((PropertyIndexSupplier) () -> Collections.singletonMap("spring.datasource.username", "SPRING_DATASOURCE_USERNAME"))
-            .substituteValues(resolver);
+        PropertyIndexSupplier unresolved = () ->
+            Collections.singletonMap("spring.datasource.username", "SPRING_DATASOURCE_USERNAME");
+        PropertyIndexSupplier supplier = unresolved.substituteValues(resolver);
 
         Map<String, String> index = supplier.get();
 

@@ -5,11 +5,9 @@ import org.springframework.boot.context.config.ConfigDataEnvironmentPostProcesso
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/**
- * @author Vincent Nadoll
- */
 public class OrderTest {
 
+    // CHECKSTYLE.OFF: LineLength
     @Test
     void testOrder() {
         assertTrue(ConfigDataEnvironmentPostProcessor.ORDER < FilenameSecretsEnvironmentPostProcessor.ORDER);
@@ -17,4 +15,5 @@ public class OrderTest {
         assertTrue(FilenameConfigDataSecretsEnvironmentPostProcessor.ORDER < EnvironmentConfigDataSecretsEnvironmentPostProcessor.ORDER);
         assertTrue(EnvironmentConfigDataSecretsEnvironmentPostProcessor.ORDER < EnvironmentSecretsPropertyEnvironmentPostProcessor.ORDER);
     }
+    // CHECKSTYLE.ON: LineLength
 }

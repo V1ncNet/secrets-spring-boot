@@ -15,9 +15,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
-/**
- * @author Vincent Nadoll
- */
 public abstract class AbstractSecretsEnvironmentPostProcessorTest {
 
     private SpringApplication application;

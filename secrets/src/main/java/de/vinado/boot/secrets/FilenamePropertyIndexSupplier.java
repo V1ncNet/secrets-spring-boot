@@ -64,7 +64,9 @@ public class FilenamePropertyIndexSupplier implements PropertyIndexSupplier {
     }
 
     private Separator getSeparator() {
-        char property = environment.getProperty(SEPARATOR_PROPERTY, Character.class, DEFAULT_SEPARATOR.getCharacter());
+        char property = environment.getProperty(SEPARATOR_PROPERTY,
+            Character.class,
+            DEFAULT_SEPARATOR.getCharacter());
         return Separator.of(property);
     }
 
