@@ -42,7 +42,7 @@
     </issueManagement>
 
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>17</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -52,10 +52,12 @@
         <dependency.checkstyle.version>8.41.1</dependency.checkstyle.version>
         <dependency.spring-boot.version>2.4.4</dependency.spring-boot.version>
 
+        <convergence.lombok.verison>1.18.26</convergence.lombok.verison>
+
         <plugin.checkstyle.version>3.1.2</plugin.checkstyle.version>
-        <plugin.compiler.version>3.8.1</plugin.compiler.version>
+        <plugin.compiler.version>3.10.1</plugin.compiler.version>
         <plugin.gpg.version>1.6</plugin.gpg.version>
-        <plugin.javadoc.version>3.2.0</plugin.javadoc.version>
+        <plugin.javadoc.version>3.5.0</plugin.javadoc.version>
         <plugin.release.version>2.5.3</plugin.release.version>
         <plugin.source.version>3.2.1</plugin.source.version>
         <plugin.surefire.version>2.22.2</plugin.surefire.version>
@@ -69,6 +71,12 @@
                 <version>${dependency.spring-boot.version}</version>
                 <scope>import</scope>
                 <type>pom</type>
+            </dependency>
+
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${convergence.lombok.verison}</version>
             </dependency>
 
             <dependency>
