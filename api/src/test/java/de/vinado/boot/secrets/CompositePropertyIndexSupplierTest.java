@@ -86,9 +86,9 @@ class CompositePropertyIndexSupplierTest {
             .add(PropertyIndexSupplier.from(second));
 
         Map<String, String> buildThenSubstitute = builder.build().substituteValues(environment).get();
-        Map<String, String> BuildAndSubstitute = builder.buildAndSubstitute(environment).get();
+        Map<String, String> buildAndSubstitute = builder.buildAndSubstitute(environment).get();
 
-        assertEquals(buildThenSubstitute, BuildAndSubstitute);
+        assertEquals(buildThenSubstitute, buildAndSubstitute);
     }
 
     @Test
