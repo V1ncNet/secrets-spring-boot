@@ -3,9 +3,6 @@ package de.vinado.boot.secrets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-/**
- * @author Vincent Nadoll
- */
 final class TestUtils {
 
     public static String fileUriFromClasspath(String filename) {

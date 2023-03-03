@@ -15,9 +15,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/**
- * @author Vincent Nadoll
- */
 class SecretsEnvironmentTest {
 
     private ConfigurableEnvironment environment;

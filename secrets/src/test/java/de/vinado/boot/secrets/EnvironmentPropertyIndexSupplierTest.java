@@ -19,9 +19,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
-/**
- * @author Vincent Nadoll
- */
 class EnvironmentPropertyIndexSupplierTest {
 
     private ConfigurableEnvironment environment;

@@ -10,9 +10,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-/**
- * @author Vincent Nadoll
- */
 class FilenameSecretsEnvironmentPostProcessorTest extends AbstractSecretsEnvironmentPostProcessorTest {
 
     @Override

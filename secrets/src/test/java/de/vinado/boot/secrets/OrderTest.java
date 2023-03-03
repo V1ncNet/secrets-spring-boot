@@ -5,9 +5,6 @@ import org.springframework.boot.context.config.ConfigDataEnvironmentPostProcesso
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/**
- * @author Vincent Nadoll
- */
 public class OrderTest {
 
     @Test
