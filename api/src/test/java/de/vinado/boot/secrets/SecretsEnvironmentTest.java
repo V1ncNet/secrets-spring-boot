@@ -28,6 +28,7 @@ class SecretsEnvironmentTest {
         environment = new StandardEnvironment();
     }
 
+    // CHECKSTYLE.OFF: LineLength
     @Test
     void initializingNullArguments_shouldThrowException() {
         assertThrows(IllegalArgumentException.class, () -> new SecretsEnvironment(Supplier::get, null, null, null));
@@ -36,6 +37,7 @@ class SecretsEnvironmentTest {
         assertThrows(IllegalArgumentException.class, () -> new SecretsEnvironment(null, null, null, Collections::emptyMap));
         assertThrows(IllegalArgumentException.class, () -> new SecretsEnvironment(null, null, null, null));
     }
+    // CHECKSTYLE.ON: LineLength
 
     @Test
     void emptyPropertyIndex_shouldAddPropertyToEnvironment() {

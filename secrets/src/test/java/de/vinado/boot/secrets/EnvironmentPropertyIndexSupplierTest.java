@@ -29,6 +29,7 @@ class EnvironmentPropertyIndexSupplierTest {
         environment = spy(new StandardEnvironment());
     }
 
+    // CHECKSTYLE.OFF: LineLength
     @Test
     void initializingNullArguments_shouldThrowException() {
         DeferredLogFactory logFactory = Supplier::get;
@@ -42,6 +43,7 @@ class EnvironmentPropertyIndexSupplierTest {
         assertThrows(IllegalArgumentException.class, () -> new EnvironmentPropertyIndexSupplier(null, null, "_FILE"));
         assertThrows(IllegalArgumentException.class, () -> new EnvironmentPropertyIndexSupplier(null, null, null));
     }
+    // CHECKSTYLE.ON: LineLength
 
     @Test
     void suffixedEnvironmentProperty_shouldBeIndexed() {
@@ -112,7 +114,8 @@ class EnvironmentPropertyIndexSupplierTest {
     }
 
     private void createIndex(String suffix) {
-        EnvironmentPropertyIndexSupplier supplier = new EnvironmentPropertyIndexSupplier(Supplier::get, environment, suffix);
+        EnvironmentPropertyIndexSupplier supplier =
+            new EnvironmentPropertyIndexSupplier(Supplier::get, environment, suffix);
         index = supplier.get();
     }
 

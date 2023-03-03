@@ -73,7 +73,8 @@ class UtilsTest {
 
     @Test
     void startsWith() {
-        boolean startsWith = Utils.startsWith("secrets.file.properties").test("secrets.file.properties.spring.datasource.username");
+        boolean startsWith = Utils.startsWith("secrets.file.properties")
+            .test("secrets.file.properties.spring.datasource.username");
 
         assertTrue(startsWith);
     }
