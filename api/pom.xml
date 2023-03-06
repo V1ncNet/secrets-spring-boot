@@ -13,7 +13,7 @@
     <artifactId>secrets-api</artifactId>
     <name>String Boot Secrets API</name>
     <description>Extensible Secrets Post-Processor components</description>
-    <url>https://github.com/V1ncNet/spring-boot-secrets.git</url>
+    <url>https://github.com/V1ncNet/secrets-spring-boot.git</url>
 
     <dependencies>
         <dependency>
