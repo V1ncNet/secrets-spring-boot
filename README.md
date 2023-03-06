@@ -12,7 +12,7 @@ own post-processor, use the API artifact, which is available separately.
 Spring Boot Secrets is ideal for resolving **Docker Secrets** and making them
 accessible to the Spring Boot application.
 
-**Note:** Compatible with Spring Boot 3. Checkout the [v1.x] releases for a
+**Note:** Compatible with Spring Boot 3. Check out the [v1.x] releases for a
 Spring Boot 2-compatible version of this project.
 
 [v1.x]: https://github.com/V1ncNet/secrets-spring-boot/tree/v1.1.1
