@@ -89,7 +89,7 @@ The collection is available under following coordinates:
 <dependency>
     <groupId>de.vinado.boot</groupId>
     <artifactId>spring-boot-secrets</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
 </dependency>
 ```
 
@@ -100,7 +100,7 @@ post-processors:
 <dependency>
     <groupId>de.vinado.boot</groupId>
     <artifactId>spring-boot-secrets-api</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
 </dependency>
 ```
 
