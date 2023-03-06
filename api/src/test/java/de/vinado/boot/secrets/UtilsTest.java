@@ -20,9 +20,6 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-/**
- * @author Vincent Nadoll
- */
 class UtilsTest {
 
     private Log log;
@@ -76,7 +73,8 @@ class UtilsTest {
 
     @Test
     void startsWith() {
-        boolean startsWith = Utils.startsWith("secrets.file.properties").test("secrets.file.properties.spring.datasource.username");
+        boolean startsWith = Utils.startsWith("secrets.file.properties")
+            .test("secrets.file.properties.spring.datasource.username");
 
         assertTrue(startsWith);
     }

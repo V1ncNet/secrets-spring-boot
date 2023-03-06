@@ -8,9 +8,6 @@ import static de.vinado.boot.secrets.TestUtils.fileUriFromClasspath;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-/**
- * @author Vincent Nadoll
- */
 class EnvironmentSecretsPropertyEnvironmentPostProcessorTest extends AbstractSecretsEnvironmentPostProcessorTest {
 
     @Override

@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.logging.Log;
 import org.springframework.boot.logging.DeferredLogFactory;
-import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.PropertyResolver;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,16 +42,16 @@ public class FilenamePropertyIndexSupplier implements PropertyIndexSupplier {
     private static final String DEFAULT_BASE_DIR_PROPERTY = "/run/secrets";
 
     private final Log log;
-    private final ConfigurableEnvironment environment;
+    private final PropertyResolver propertyResolver;
 
-    public FilenamePropertyIndexSupplier(DeferredLogFactory logFactory, ConfigurableEnvironment environment) {
+    public FilenamePropertyIndexSupplier(DeferredLogFactory logFactory, PropertyResolver propertyResolver) {
         this.log = logFactory.getLog(getClass());
-        this.environment = environment;
+        this.propertyResolver = propertyResolver;
     }
 
     @Override
     public Map<String, String> get() {
-        String baseDir = environment.getProperty(BASE_DIR_PROPERTY, DEFAULT_BASE_DIR_PROPERTY);
+        String baseDir = propertyResolver.getProperty(BASE_DIR_PROPERTY, DEFAULT_BASE_DIR_PROPERTY);
         Separator separator = getSeparator();
         return Optional.of(baseDir)
             .map(Paths::get)
@@ -64,7 +64,9 @@ public class FilenamePropertyIndexSupplier implements PropertyIndexSupplier {
     }
 
     private Separator getSeparator() {
-        char property = environment.getProperty(SEPARATOR_PROPERTY, Character.class, DEFAULT_SEPARATOR.getCharacter());
+        char property = propertyResolver.getProperty(SEPARATOR_PROPERTY,
+            Character.class,
+            DEFAULT_SEPARATOR.getCharacter());
         return Separator.of(property);
     }
 

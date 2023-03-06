@@ -12,8 +12,8 @@ import org.springframework.core.io.ResourceLoader;
 
 /**
  * <p>
- * An {@link EnvironmentPostProcessor} that loads and applies a {@link SecretsEnvironment} to Spring's {@link
- * org.springframework.core.env.Environment}.
+ * An {@link EnvironmentPostProcessor} that loads and applies a {@link SecretsEnvironment} to Spring's
+ * {@link org.springframework.core.env.Environment}.
  * </p><p>
  * This component implements {@link Ordered} to draw attention to the fact, that {@link SecretsEnvironmentPostProcessor}
  * must be executed after {@link ConfigDataEnvironmentPostProcessor} in order to override configuration properties. I'd
