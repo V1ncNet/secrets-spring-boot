@@ -177,7 +177,7 @@ Configuration
 -------------
 
 | application.properties  | Data Type  | Default Value  | Example                                                              | Post-Processor                                         |
-| ----------------------- | ---------- | -------------- | -------------------------------------------------------------------- | ------------------------------------------------------ |
+|-------------------------|------------|----------------|----------------------------------------------------------------------|--------------------------------------------------------|
 | secrets.file.properties | _`Map`_    |                | `spring.datasource.username=/run/secrets/spring.datasource.username` | `FilenameConfigDataSecretsEnvironmentPostProcessor`    |
 | secrets.file.base-dir   | _`String`_ | `/run/secrets` | `/some/base/directory`                                               | `FilenameSecretsEnvironmentPostProcessor`              |
 | secrets.file.separator  | _`String`_ | `.`            | Only `.` or `_`                                                      | `FilenameSecretsEnvironmentPostProcessor`              |
