@@ -12,7 +12,7 @@ own post-processor, use the API artifact, which is available separately.
 Spring Boot Secrets is ideal for resolving **Docker Secrets** and making them
 accessible to the Spring Boot application.
 
-**Note:** Compatible with Spring Boot > 2.4.4
+**Note:** Compatible with Spring Boot 3
 
 
 Features
@@ -87,9 +87,9 @@ The collection is available under following coordinates:
 
 ```xml
 <dependency>
-    <groupId>de.vinado.spring</groupId>
-    <artifactId>spring-boot-secrets</artifactId>
-    <version>1.1.0</version>
+    <groupId>de.vinado.boot</groupId>
+    <artifactId>secrets</artifactId>
+    <version>2.0.0</version>
 </dependency>
 ```
 
@@ -98,9 +98,9 @@ post-processors:
 
 ```xml
 <dependency>
-    <groupId>de.vinado.spring</groupId>
-    <artifactId>spring-boot-secrets-api</artifactId>
-    <version>1.1.0</version>
+    <groupId>de.vinado.boot</groupId>
+    <artifactId>secrets-api</artifactId>
+    <version>2.0.0</version>
 </dependency>
 ```
 
