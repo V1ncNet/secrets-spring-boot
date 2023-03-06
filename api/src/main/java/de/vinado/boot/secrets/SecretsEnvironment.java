@@ -12,8 +12,8 @@ import java.util.function.Consumer;
 import static de.vinado.boot.secrets.Utils.acceptAndLog;
 
 /**
- * A wrapper around {@link ConfigurableEnvironment} which loads secrets and applies them to {@link
- * SecretPropertiesPropertySource}.
+ * A wrapper around {@link ConfigurableEnvironment} which loads secrets and applies them to
+ * {@link SecretPropertiesPropertySource}.
  *
  * @author Vincent Nadoll
  */

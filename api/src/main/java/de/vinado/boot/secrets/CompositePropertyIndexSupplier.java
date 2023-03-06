@@ -104,8 +104,8 @@ public class CompositePropertyIndexSupplier implements PropertyIndexSupplier {
 
 
     /**
-     * Creates a new {@link Builder} using the given merge function to handle duplicate keys during {@link #get()
-     * merge}.
+     * Creates a new {@link Builder} using the given merge function to handle duplicate keys during
+     * {@link #get() merge}.
      *
      * @return a new instance of {@link Builder}
      */
@@ -115,8 +115,8 @@ public class CompositePropertyIndexSupplier implements PropertyIndexSupplier {
     }
 
     /**
-     * Convenience component making use of the Builder Pattern to instantiate a new {@link
-     * CompositePropertyIndexSupplier}.
+     * Convenience component making use of the Builder Pattern to instantiate a new
+     * {@link CompositePropertyIndexSupplier}.
      *
      * @author Vincent Nadoll
      */
