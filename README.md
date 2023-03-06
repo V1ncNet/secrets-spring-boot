@@ -87,7 +87,7 @@ The collection is available under following coordinates:
 
 ```xml
 <dependency>
-    <groupId>de.vinado.spring</groupId>
+    <groupId>de.vinado.boot</groupId>
     <artifactId>spring-boot-secrets</artifactId>
     <version>1.1.0</version>
 </dependency>
@@ -98,7 +98,7 @@ post-processors:
 
 ```xml
 <dependency>
-    <groupId>de.vinado.spring</groupId>
+    <groupId>de.vinado.boot</groupId>
     <artifactId>spring-boot-secrets-api</artifactId>
     <version>1.1.0</version>
 </dependency>
